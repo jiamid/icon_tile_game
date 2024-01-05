@@ -67,12 +67,52 @@ class IndexPageState extends State<IndexPage>
   }
 
   String preTitle = '';
-  int nowLevel = 0;
+  int nowLevel = 5;
   int mapMaxWidth = 3;
   List<List<List<int>>> gameMap = [];
 
   List<int> floorDiffY = [1, 2, 3, 4, 5, 6, 7, 7, 7];
   List<int> floorDiffX = [1, 2, 3, 4, 5, 6, 7, 7, 7];
+
+  runAnimate(tempContent, startOffset, endOffset, color, startWidth, endWidth,
+      img, overCall) {
+    var duration = const Duration(milliseconds: 300);
+    OverlayEntry? overlayEntry = OverlayEntry(builder: (_) {
+      return BoxAnimationPage(
+          startPosition: startOffset,
+          endPosition: endOffset,
+          duration: duration,
+          color: color,
+          startWidth: startWidth,
+          endWidth: endWidth,
+          img: img);
+    });
+    // 显示Overlay
+    Overlay.of(tempContent).insert(overlayEntry);
+    // 等待动画结束
+    Future.delayed(duration, () {
+      overlayEntry?.remove();
+      overlayEntry = null;
+      overCall?.call();
+    });
+  }
+
+  success() {
+      Future.delayed(const Duration(milliseconds: 50), () {
+        for (int i = 0; i < 5; i++) {
+          double width = MediaQuery.of(context).size.width;
+          double height = MediaQuery.of(context).size.height;
+          int boxType = Random().nextInt(13) + 1;
+          double xx = Random().nextDouble() * width;
+          int flag = Random().nextInt(2);
+          double yy = flag == 0 ? 0.0 : height;
+          runAnimate(context, Offset(width / 2, height / 2), Offset(xx, yy),
+              boxColorMap[boxType], 10.0, 100.0, 'assets/img/$boxType.webp', () {
+              });
+        }
+      });
+
+  }
 
   initMap() {
     nowLevel += 1;
@@ -222,34 +262,41 @@ class IndexPageState extends State<IndexPage>
                 if (!checkPositioned(c, width)) {
                   return;
                 }
-
                 var thisBox = {'type': boxType, 'status': 0};
                 var endOffset = addBoxStart(thisBox, f, y, x);
                 if (endOffset == null) {
                   return;
                 }
-                var duration = const Duration(milliseconds: 300);
-                OverlayEntry? overlayEntry = OverlayEntry(builder: (_) {
-                  return BoxAnimationPage(
-                      startPosition: startOffset,
-                      endPosition: endOffset,
-                      duration: duration,
-                      color: boxColorMap[boxType],
-                      startWidth: width,
-                      endWidth: oneBarWidth,
-                      img: 'assets/img/$boxType.webp');
-                });
-                // 显示Overlay
-                Overlay.of(c).insert(overlayEntry);
 
-                // 等待动画结束
-                Future.delayed(duration, () {
-                  overlayEntry?.remove();
-                  overlayEntry = null;
+                runAnimate(c, startOffset, endOffset, boxColorMap[boxType],
+                    width, oneBarWidth, 'assets/img/$boxType.webp', () {
                   thisBox['status'] = 1;
                   setState(() {});
                   chickBox();
                 });
+
+                // var duration = const Duration(milliseconds: 300);
+                // OverlayEntry? overlayEntry = OverlayEntry(builder: (_) {
+                //   return BoxAnimationPage(
+                //       startPosition: startOffset,
+                //       endPosition: endOffset,
+                //       duration: duration,
+                //       color: boxColorMap[boxType],
+                //       startWidth: width,
+                //       endWidth: oneBarWidth,
+                //       img: 'assets/img/$boxType.webp');
+                // });
+                // // 显示Overlay
+                // Overlay.of(c).insert(overlayEntry);
+                //
+                // // 等待动画结束
+                // Future.delayed(duration, () {
+                //   overlayEntry?.remove();
+                //   overlayEntry = null;
+                //   thisBox['status'] = 1;
+                //   setState(() {});
+                //   chickBox();
+                // });
               },
               child: Container(
                 width: width - 1,
