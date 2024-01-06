@@ -9,7 +9,7 @@ Map boxColorMap = {
   5: Colors.purple,
   6: Colors.grey,
   7: Colors.white,
-  8: Colors.blueGrey,
+  8: Colors.lightBlue,
   9: Colors.green,
   10: Colors.red,
   11: Colors.yellowAccent,

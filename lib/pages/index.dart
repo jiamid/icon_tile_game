@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'box_animation.dart';
 import 'game_config.dart';
 
@@ -209,6 +210,8 @@ class IndexPageState extends State<IndexPage>
       if (nums.length >= 3) {
         for (int i = 0; i < 3; i++) {
           myBox.removeAt(nums[i]);
+          HapticFeedback.mediumImpact();
+          // HapticFeedback.selectionClick();
         }
         break;
       }
@@ -302,15 +305,15 @@ class IndexPageState extends State<IndexPage>
                 width: width - 1,
                 height: width - 1,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(5),
                   border: Border.all(
                     color: boxColorMap[boxType], // 边框颜色
-                    width: 1, // 边框宽度
+                    width: 2, // 边框宽度
                   ),
                   color: boxColorMap[boxType],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(4),
                   child: Image.asset(
                     'assets/img/$boxType.webp',
                     fit: BoxFit.cover,

@@ -83,7 +83,7 @@ class BoxAnimationPageState extends State<BoxAnimationPage>
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: Colors.black, // 边框颜色
+                color: widget.color, // 边框颜色
                 width: 2.0, // 边框宽度
               ),
               color: widget.color,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'page/index.dart';
-
+import 'pages/home.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,15 +32,9 @@ class MyAppState extends State<MyApp> {
     // colorScheme: ColorScheme.fromSeed(seedColor: JiaColors.brand),
     // useMaterial3: true,
     primaryColor: const Color(0xFFD9D1A9),
-    primaryIconTheme: const IconThemeData(
-        color:  Color(0xFF0C0C0B),
-        size: 30
-    ),
-    iconTheme: const IconThemeData(
-        color:  Color(0xFF0C0C0B),
-        size: 25
-    ),
-    scaffoldBackgroundColor: Colors.blueGrey,
+    primaryIconTheme: const IconThemeData(color: Color(0xFF0C0C0B), size: 30),
+    iconTheme: const IconThemeData(color: Color(0xFF0C0C0B), size: 25),
+    scaffoldBackgroundColor: Colors.white,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     splashFactory: NoSplash.splashFactory,
@@ -52,15 +45,9 @@ class MyAppState extends State<MyApp> {
     // colorScheme: ColorScheme.fromSeed(seedColor: JiaColors.brand),
     // useMaterial3: true,
     primaryColor: const Color(0xFFD9D1A9),
-    primaryIconTheme: const IconThemeData(
-        color:  Color(0xFFFFFFFF),
-        size: 30
-    ),
-    iconTheme: const IconThemeData(
-        color:  Color(0xFFFFFFFF),
-        size: 25
-    ),
-    scaffoldBackgroundColor: Colors.blueGrey,
+    primaryIconTheme: const IconThemeData(color: Color(0xFFFFFFFF), size: 30),
+    iconTheme: const IconThemeData(color: Color(0xFFFFFFFF), size: 25),
+    scaffoldBackgroundColor: Colors.black,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     splashFactory: NoSplash.splashFactory,
@@ -78,7 +65,7 @@ class MyAppState extends State<MyApp> {
     ]);
     return MaterialApp(
       initialRoute: '/',
-      home: const IndexPage(),
+      home: const HomePage(),
       debugShowCheckedModeBanner: false,
       theme: isDarkMode(context) ? darkTheme : lightTheme,
     );
