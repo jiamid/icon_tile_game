@@ -70,7 +70,7 @@ class IndexPageState extends State<IndexPage>
   }
 
   String preTitle = '';
-  int nowLevel = 7;
+  int nowLevel = 1;
   int mapMaxWidth = 3;
   List<List<List<int>>> gameMap = [];
 
@@ -319,16 +319,23 @@ class IndexPageState extends State<IndexPage>
   List<Widget> stackChildrenList = [];
 
   buildMap() {
-    var width = MediaQuery.of(context).size.width - 4;
+    var width = MediaQuery.of(context).size.width - 20;
     var oneWidth = width / mapMaxWidth;
 
     var boxWidth = width + 4;
-    var boxHeight = width + 4 + 50;
+    var boxHeight = width + 4 + 20;
 
     var base = Container(
       height: boxHeight,
       width: boxWidth,
-      color: Colors.transparent,
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.black54, // 边框颜色
+          width: 2.0, // 边框宽度
+        ),
+      ),
     );
     List<Widget> allFloor = [
       base,
@@ -343,8 +350,8 @@ class IndexPageState extends State<IndexPage>
             var left = oneWidth * x + floorDiffX[floor];
             var one = Positioned(
                 child: buildOneBox(boxType, floor, x, y, oneWidth, top, left),
-                top: top,
-                left: left);
+                top: top + 8,
+                left: left+2);
             allFloor.add(one);
           }
         }
@@ -431,7 +438,7 @@ class IndexPageState extends State<IndexPage>
   double oneBarWidth = 0;
 
   buildBarBox() {
-    var width = MediaQuery.of(context).size.width;
+    var width = MediaQuery.of(context).size.width - 20;
     oneBarWidth = width / boxKeyList.length;
     var base = Container(
       height: oneBarWidth + 6,
