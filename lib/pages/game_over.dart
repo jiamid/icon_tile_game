@@ -2,62 +2,52 @@ import 'package:flutter/material.dart';
 import '../router/router_manager.dart';
 import '/custom_widget/typing_text.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class GameOverPage extends StatefulWidget {
+  GameOverPage({super.key, this.gameStatus = false});
+
+  bool gameStatus;
 
   @override
-  HomePageState createState() => HomePageState();
+  GameOverPageState createState() => GameOverPageState();
 }
 
-class HomePageState extends State<HomePage> {
-  List<TextLine> welcomeLines = [
+class GameOverPageState extends State<GameOverPage> {
+  List<TextLine> successLines = [
+    TextLine(
+        bgColor: Colors.white,
+        textColor: Colors.red,
+        text: '太棒了！！！',
+        fontSize: 30),
     TextLine(
         bgColor: Colors.black,
         textColor: Colors.white,
-        text: '这是一个简单的小游戏',
-        fontSize: 25),
-    TextLine(
-        bgColor: Colors.black,
-        textColor: Colors.white,
-        text: '通过收集三个相同的图标来消除它们',
-        fontSize: 25),
+        text: '你通过了最终的考验！！！',
+        fontSize: 30),
     TextLine(
         bgColor: const Color(0xFF000000),
-        textColor: Colors.red,
-        text: '你的任务是将画面中的所有图标消除!!!',
-        fontSize: 25),
-    TextLine(
-        bgColor: const Color(0xFF260C10),
-        textColor: const Color(0xFFFFFFFF),
-        text: '你有7个格子\n请不要把它们用光了！',
+        textColor: Colors.white,
+        text: '不愧是你!!!',
         fontSize: 30),
-    TextLine(
-        bgColor: Colors.white,
-        textColor: Colors.black,
-        text: '开始游戏请点击下方按钮\n没看清再看一遍',
-        fontSize: 30),
-    // TextLine(
-    //     bgColor: Colors.white, textColor: Colors.black, text: 'Hello Jiamid!'),
-    // TextLine(
-    //     bgColor: Colors.white, textColor: Colors.red, text: 'Love & Peace!'),
   ];
 
-  List<TextLine> buttonLines = [
+  List<TextLine> failLines = [
     TextLine(
         bgColor: Colors.white,
         textColor: Colors.black,
-        text: '勇士！！！',
-        dot: '',
-        fontSize: 40),
-    TextLine(
-        bgColor: Colors.white,
-        textColor: Colors.black,
-        text: '点击这里',
+        text: '失败是常有的事情',
         fontSize: 40),
     TextLine(
         bgColor: Colors.black,
         textColor: Colors.white,
-        text: '开始游戏',
+        text: '再来一次',
+        fontSize: 40),
+  ];
+
+  List<TextLine> reLines = [
+    TextLine(
+        bgColor: Colors.black,
+        textColor: Colors.white,
+        text: '再来一次',
         dot: '',
         fontSize: 40),
   ];
@@ -91,7 +81,7 @@ class HomePageState extends State<HomePage> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: TypingText(
-                    lines: welcomeLines,
+                    lines: widget.gameStatus ? successLines : failLines,
                   ),
                 ),
               ),
@@ -108,7 +98,7 @@ class HomePageState extends State<HomePage> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: TypingText(
-                        lines: buttonLines,
+                        lines: reLines,
                         hapticStatus: false,
                         loop: false,
                       ),

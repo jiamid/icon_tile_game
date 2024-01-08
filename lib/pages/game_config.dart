@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 Map boxColorMap = {
-  0: Colors.transparent,
+  0: Colors.black12,
   1: Colors.redAccent,
   2: Colors.greenAccent,
   3: Colors.amber,

@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import '../custom_widget/typing_text.dart';
+import '../router/router_manager.dart';
 import 'box_animation.dart';
 import 'game_config.dart';
 
@@ -68,7 +70,7 @@ class IndexPageState extends State<IndexPage>
   }
 
   String preTitle = '';
-  int nowLevel = 5;
+  int nowLevel = 7;
   int mapMaxWidth = 3;
   List<List<List<int>>> gameMap = [];
 
@@ -98,25 +100,7 @@ class IndexPageState extends State<IndexPage>
     });
   }
 
-  success() {
-      Future.delayed(const Duration(milliseconds: 50), () {
-        for (int i = 0; i < 5; i++) {
-          double width = MediaQuery.of(context).size.width;
-          double height = MediaQuery.of(context).size.height;
-          int boxType = Random().nextInt(13) + 1;
-          double xx = Random().nextDouble() * width;
-          int flag = Random().nextInt(2);
-          double yy = flag == 0 ? 0.0 : height;
-          runAnimate(context, Offset(width / 2, height / 2), Offset(xx, yy),
-              boxColorMap[boxType], 10.0, 100.0, 'assets/img/$boxType.webp', () {
-              });
-        }
-      });
-
-  }
-
   initMap() {
-    nowLevel += 1;
     gameMap = (levelMap[nowLevel] ?? levelMap[1]!);
     floorDiffX = (levelOffsetMap[nowLevel]?[0] ?? levelOffsetMap[1]?[0])!;
     floorDiffY = (levelOffsetMap[nowLevel]?[1] ?? levelOffsetMap[1]?[1])!;
@@ -219,6 +203,11 @@ class IndexPageState extends State<IndexPage>
     setState(() {});
     if (myBox.isEmpty) {
       if (checkAllZeros(gameMap)) {
+        nowLevel += 1;
+        if (!levelMap.containsKey(nowLevel)) {
+          GlobalPageRouter.replace(Pages.gameOver, context,
+              arguments: {'gameStatus': true});
+        }
         initMap();
       }
     }
@@ -227,6 +216,8 @@ class IndexPageState extends State<IndexPage>
       setState(() {
         preTitle = 'GAME OVER';
       });
+      GlobalPageRouter.replace(Pages.gameOver, context,
+          arguments: {'gameStatus': false});
     }
   }
 
@@ -272,7 +263,7 @@ class IndexPageState extends State<IndexPage>
                 }
 
                 runAnimate(c, startOffset, endOffset, boxColorMap[boxType],
-                    width, oneBarWidth, 'assets/img/$boxType.webp', () {
+                    width, oneBarWidth - 10, 'assets/img/$boxType.webp', () {
                   thisBox['status'] = 1;
                   setState(() {});
                   chickBox();
@@ -365,27 +356,27 @@ class IndexPageState extends State<IndexPage>
     );
   }
 
-  buildClickButton(text, onPressed) {
-    return ElevatedButton(
-      style: ButtonStyle(
-          textStyle: MaterialStateProperty.all(
-              const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          // foregroundColor: MaterialStateProperty.all(Colors.cyan),
-          // overlayColor: MaterialStateProperty.all(pickColor.withAlpha(50)),
-          backgroundColor: MaterialStateProperty.all(Colors.lightBlueAccent),
-          elevation: MaterialStateProperty.all(0),
-          // shadowColor: MaterialStateProperty.all(pickColor),
-          shape: MaterialStateProperty.all(
-            const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-            ),
-          )),
-      onPressed: onPressed,
-      child: Text(
-        text,
-        style: const TextStyle(color: Colors.black),
-      ),
-    );
+  buildClickButton(child, onPressed) {
+    return SizedBox(
+        height: 60,
+        width: 60,
+        child: ElevatedButton(
+          style: ButtonStyle(
+              textStyle: MaterialStateProperty.all(
+                  const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              // foregroundColor: MaterialStateProperty.all(Colors.cyan),
+              // overlayColor: MaterialStateProperty.all(pickColor.withAlpha(50)),
+              backgroundColor: MaterialStateProperty.all(Colors.black),
+              elevation: MaterialStateProperty.all(0),
+              // shadowColor: MaterialStateProperty.all(pickColor),
+              shape: MaterialStateProperty.all(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(70)),
+                ),
+              )),
+          onPressed: onPressed,
+          child: child,
+        ));
   }
 
   @override
@@ -402,7 +393,7 @@ class IndexPageState extends State<IndexPage>
                   child: Text(
                     preTitle,
                     style: const TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 40,
                         decoration: TextDecoration.none),
@@ -416,11 +407,12 @@ class IndexPageState extends State<IndexPage>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        buildClickButton('刷新地图', () {
+                        buildClickButton(const Icon(Icons.recycling_rounded),
+                            () {
                           refreshMap();
                         }),
-                        buildClickButton('重置关卡', () {
-                          nowLevel = 0;
+                        buildClickButton(const Icon(Icons.refresh), () {
+                          nowLevel = 1;
                           myBox = [];
                           initMap();
                         }),
@@ -445,9 +437,10 @@ class IndexPageState extends State<IndexPage>
       height: oneBarWidth + 6,
       width: width,
       decoration: BoxDecoration(
+        color: Colors.black26,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: Colors.grey, // 边框颜色
+          color: Colors.black54, // 边框颜色
           width: 2.0, // 边框宽度
         ),
       ),
@@ -459,14 +452,14 @@ class IndexPageState extends State<IndexPage>
         oneChoice = myBox[index]['type'];
       }
       var one = Positioned(
-        top: 5,
+        top: 8,
         left: oneBarWidth * index,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
+          padding: const EdgeInsets.only(left: 5),
           child: Container(
               key: boxKeyList[index],
-              width: oneBarWidth - 2,
-              height: oneBarWidth - 2,
+              width: oneBarWidth - 10,
+              height: oneBarWidth - 10,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(

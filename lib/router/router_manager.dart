@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../pages/index.dart';
+import '../pages/game_over.dart';
 
 class Pages {
   static const index = IndexPage;
+  static const gameOver = GameOverPage;
 }
 
 /// 构造方法
 Map<Type, Function> globalPageMap = {
   IndexPage: (context, {arguments}) => const IndexPage(),
+  GameOverPage: (context, {arguments}) => GameOverPage(
+        gameStatus: arguments['gameStatus'] == true,
+      )
 };
 
 /// 页面控制器
@@ -29,7 +34,7 @@ class GlobalPageRouter {
       var view = pageMap[key]!;
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-            pageBuilder: (_, __, ___) => view(_),
+            pageBuilder: (_, __, ___) => view(_, arguments: arguments),
             transitionDuration: const Duration(milliseconds: 400),
             transitionsBuilder: (BuildContext context,
                 Animation<double> animation1,
