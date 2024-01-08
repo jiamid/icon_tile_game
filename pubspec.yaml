@@ -93,3 +93,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+# 先使用下面命令安装插件
+# flutter pub global activate flutter_launcher_icons
+# 运行下面命令替换图标
+# flutter pub global run flutter_launcher_icons:main
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.webp"
