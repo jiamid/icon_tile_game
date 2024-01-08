@@ -212,7 +212,6 @@ class IndexPageState extends State<IndexPage>
       }
     }
     if (myBox.length == boxKeyList.length) {
-      print('game over!');
       setState(() {
         preTitle = 'GAME OVER';
       });
@@ -351,7 +350,7 @@ class IndexPageState extends State<IndexPage>
             var one = Positioned(
                 child: buildOneBox(boxType, floor, x, y, oneWidth, top, left),
                 top: top + 8,
-                left: left+2);
+                left: left + 2);
             allFloor.add(one);
           }
         }
