@@ -101,6 +101,8 @@ class IndexPageState extends State<IndexPage>
   }
 
   initMap() {
+    myBox = [];
+    refreshTimes = 3;
     gameMap = (levelMap[nowLevel] ?? levelMap[1]!);
     floorDiffX = (levelOffsetMap[nowLevel]?[0] ?? levelOffsetMap[1]?[0])!;
     floorDiffY = (levelOffsetMap[nowLevel]?[1] ?? levelOffsetMap[1]?[1])!;
@@ -121,7 +123,22 @@ class IndexPageState extends State<IndexPage>
     setState(() {});
   }
 
+  int refreshTimes = 3;
+  int resetTimes = 3;
+
+  resetLevel() {
+    if (resetTimes <= 0) {
+      return;
+    }
+    resetTimes -= 1;
+    initMap();
+  }
+
   refreshMap() {
+    if (refreshTimes <= 0) {
+      return;
+    }
+    refreshTimes -= 1;
     List<int> allNums = [];
     for (var i = 0; i < gameMap.length; i++) {
       for (var j = 0; j < gameMap[i].length; j++) {
@@ -362,27 +379,44 @@ class IndexPageState extends State<IndexPage>
     );
   }
 
-  buildClickButton(child, onPressed) {
-    return SizedBox(
-        height: 60,
-        width: 60,
-        child: ElevatedButton(
-          style: ButtonStyle(
-              textStyle: MaterialStateProperty.all(
-                  const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              // foregroundColor: MaterialStateProperty.all(Colors.cyan),
-              // overlayColor: MaterialStateProperty.all(pickColor.withAlpha(50)),
-              backgroundColor: MaterialStateProperty.all(Colors.black),
-              elevation: MaterialStateProperty.all(0),
-              // shadowColor: MaterialStateProperty.all(pickColor),
-              shape: MaterialStateProperty.all(
-                const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(70)),
-                ),
-              )),
-          onPressed: onPressed,
-          child: child,
-        ));
+  buildClickButton(child, onPressed, {times}) {
+    List<Widget> stackChildren = [
+      SizedBox(
+          height: 60,
+          width: 60,
+          child: ElevatedButton(
+            style: ButtonStyle(
+                textStyle: MaterialStateProperty.all(
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                // foregroundColor: MaterialStateProperty.all(Colors.cyan),
+                // overlayColor: MaterialStateProperty.all(pickColor.withAlpha(50)),
+                backgroundColor: MaterialStateProperty.all(Colors.black),
+                elevation: MaterialStateProperty.all(0),
+                // shadowColor: MaterialStateProperty.all(pickColor),
+                shape: MaterialStateProperty.all(
+                  const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(70)),
+                  ),
+                )),
+            onPressed: onPressed,
+            child: child,
+          )),
+    ];
+    if (times != null) {
+      stackChildren.add(Positioned(
+          left: 40,
+          child: Container(
+            height: 20,
+            width: 20,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.red,
+            ),
+            child: Text(times),
+          )));
+    }
+    return Stack(children: stackChildren);
   }
 
   @override
@@ -413,14 +447,17 @@ class IndexPageState extends State<IndexPage>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        buildClickButton(const Icon(Icons.recycling_rounded),
-                            () {
+                        buildClickButton(
+                            const Icon(Icons.screen_rotation_alt_rounded), () {
                           refreshMap();
-                        }),
-                        buildClickButton(const Icon(Icons.refresh), () {
-                          nowLevel = 1;
-                          myBox = [];
-                          initMap();
+                        }, times: refreshTimes.toString()),
+                        buildClickButton(const Icon(Icons.lock_reset_rounded),
+                            () {
+                          resetLevel();
+                        },times: resetTimes.toString()),
+                        buildClickButton(
+                            const Icon(Icons.keyboard_backspace_rounded), () {
+                          GlobalPageRouter.replace(Pages.home, context);
                         }),
                       ],
                     ))
@@ -437,7 +474,7 @@ class IndexPageState extends State<IndexPage>
   double oneBarWidth = 0;
 
   buildBarBox() {
-    var width = MediaQuery.of(context).size.width - 20;
+    var width = MediaQuery.of(context).size.width - 16;
     oneBarWidth = width / boxKeyList.length;
     var base = Container(
       height: oneBarWidth + 6,

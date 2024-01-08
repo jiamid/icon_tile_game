@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../pages/home.dart';
 import '../pages/index.dart';
 import '../pages/game_over.dart';
 
 class Pages {
+  static const home = HomePage;
   static const index = IndexPage;
   static const gameOver = GameOverPage;
 }
@@ -11,6 +13,7 @@ class Pages {
 /// 构造方法
 Map<Type, Function> globalPageMap = {
   IndexPage: (context, {arguments}) => const IndexPage(),
+  HomePage: (context, {arguments}) => const HomePage(),
   GameOverPage: (context, {arguments}) => GameOverPage(
         gameStatus: arguments['gameStatus'] == true,
       )
