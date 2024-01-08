@@ -16,8 +16,9 @@ Map boxColorMap = {
   12: Colors.pinkAccent,
   13: Colors.brown,
   14: Colors.teal,
+  15: Colors.deepPurpleAccent,
 };
-final List<int> allType = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+final List<int> allType = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
 final Map<int, Map<int, List<int>>> levelOffsetMap = {
   1: {
@@ -56,11 +57,11 @@ final Map<int, Map<int, List<int>>> levelOffsetMap = {
 
 Map<int, List<int>> levelTypeMap = {
   1: [6, 6, 6],
-  2: [6, 6, 6, 3, 3, 3, 3],
-  3: [6, 6, 6, 6, 6, 6, 6, 6, 6, 3, 3, 3, 3],
-  4: [6, 6, 12, 3, 6, 9, 9, 6, 6, 9, 6, 6, 18, 9],
-  5: [6, 6, 12, 3, 6, 9, 9, 6, 6, 9, 6, 6, 18, 9],
-  6: [18, 18, 15, 15, 15, 12, 12, 12, 12, 9, 9, 9, 9],
+  2: [6, 6, 3, 3, 3, 3, 3, 3],
+  3: [6, 6, 6, 6, 6, 6, 6, 6, 3, 3, 3, 3, 3, 3],
+  4: [6, 6, 12, 3, 6, 9, 9, 6, 6, 9, 3, 3, 6, 18, 9],
+  5: [6, 6, 12, 6, 6, 9, 9, 6, 6, 9, 6, 6, 18, 6],
+  6: [18, 18, 15, 15, 15, 12, 12, 12, 12, 12, 9, 6, 6, 3],
 };
 
 Map<int, List<List<List<int>>>> levelMap = {
