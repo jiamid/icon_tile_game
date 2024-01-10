@@ -102,6 +102,7 @@ class IndexPageState extends State<IndexPage>
 
   initMap() {
     myBox = [];
+    goBackTimes = 3;
     refreshTimes = 3;
     gameMap = (levelMap[nowLevel] ?? levelMap[1]!);
     floorDiffX = (levelOffsetMap[nowLevel]?[0] ?? levelOffsetMap[1]?[0])!;
@@ -125,11 +126,41 @@ class IndexPageState extends State<IndexPage>
 
   int refreshTimes = 3;
   int resetTimes = 3;
+  int goBackTimes = 3;
+  List<Map> historyList = [];
+  bool goBackStatus = false; // 用来防止关卡重置时快速点击返回导致问题
+
+  goBack() {
+    if (goBackTimes <= 0 || historyList.isEmpty) {
+      return;
+    }
+    var lastOne = historyList[historyList.length - 1];
+    myBox.removeAt(lastOne['boxIndex']);
+    historyList.removeLast();
+    goBackStatus = true;
+    runAnimate(
+        context,
+        lastOne['endOffset'],
+        lastOne['startOffset'],
+        boxColorMap[lastOne['type']],
+        oneBarWidth - 10,
+        lastOne['startWidth'],
+        'assets/img/${lastOne['type']}.webp', () {
+          if(goBackStatus){
+            gameMap[lastOne['f']][lastOne['y']][lastOne['x']] = lastOne['type'];
+          }
+      setState(() {});
+    });
+    goBackTimes -= 1;
+    setState(() {});
+  }
 
   resetLevel() {
     if (resetTimes <= 0) {
       return;
     }
+    historyList.clear();
+    goBackStatus = false;
     resetTimes -= 1;
     initMap();
   }
@@ -164,7 +195,7 @@ class IndexPageState extends State<IndexPage>
     setState(() {});
   }
 
-  addBoxStart(thisBox, f, y, x) {
+  addBoxStart(thisBox, f, y, x, startOffset, startWidth) {
     if (myBox.length == boxKeyList.length) {
       return;
     }
@@ -180,11 +211,21 @@ class IndexPageState extends State<IndexPage>
     }
     GlobalKey key = boxKeyList[index];
     RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+    Offset end = box.localToGlobal(Offset.zero);
     setState(() {
       myBox.insert(index, thisBox);
       gameMap[f][y][x] = 0;
+      historyList.add({
+        'boxIndex': index,
+        'type': thisBox['type'],
+        'f': f,
+        'y': y,
+        'x': x,
+        'startOffset': startOffset,
+        'startWidth': startWidth,
+        'endOffset': end
+      });
     });
-    var end = box.localToGlobal(Offset.zero);
     return end;
   }
 
@@ -212,6 +253,7 @@ class IndexPageState extends State<IndexPage>
         for (int i = 0; i < 3; i++) {
           myBox.removeAt(nums[i]);
           HapticFeedback.mediumImpact();
+          historyList.clear();
           // HapticFeedback.selectionClick();
         }
         break;
@@ -273,7 +315,8 @@ class IndexPageState extends State<IndexPage>
                   return;
                 }
                 var thisBox = {'type': boxType, 'status': 0};
-                var endOffset = addBoxStart(thisBox, f, y, x);
+                var endOffset =
+                    addBoxStart(thisBox, f, y, x, startOffset, width);
                 if (endOffset == null) {
                   return;
                 }
@@ -421,6 +464,12 @@ class IndexPageState extends State<IndexPage>
 
   @override
   Widget build(BuildContext context) {
+    Color goTextColor = Color.fromRGBO(
+            255 - Theme.of(context).scaffoldBackgroundColor.red,
+            255 - Theme.of(context).scaffoldBackgroundColor.green,
+            255 - Theme.of(context).scaffoldBackgroundColor.blue,
+            0.5)
+        .withAlpha(255);
     return Scaffold(
         body: SafeArea(
             bottom: false,
@@ -429,16 +478,29 @@ class IndexPageState extends State<IndexPage>
               children: [
                 // 在这里添加你的界面元素
                 SizedBox(
-                  height: 100,
-                  child: Text(
-                    preTitle,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 40,
-                        decoration: TextDecoration.none),
-                  ),
-                ),
+                    height: 100,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          buildClickButton(
+                              const Icon(Icons.keyboard_backspace_rounded), () {
+                            GlobalPageRouter.replace(Pages.home, context);
+                          }),
+                          const SizedBox(
+                            width: 40,
+                          ),
+                          Text(
+                            preTitle,
+                            style: TextStyle(
+                                color: goTextColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 40,
+                                decoration: TextDecoration.none),
+                          ),
+                        ])),
                 buildMap(),
                 const Spacer(),
                 buildBarBox(),
@@ -451,14 +513,14 @@ class IndexPageState extends State<IndexPage>
                             const Icon(Icons.screen_rotation_alt_rounded), () {
                           refreshMap();
                         }, times: refreshTimes.toString()),
-                        buildClickButton(const Icon(Icons.lock_reset_rounded),
+                        buildClickButton(const Icon(Icons.swipe_left), () {
+                          goBack();
+                        }, times: goBackTimes.toString()),
+                        buildClickButton(
+                            const Icon(Icons.settings_backup_restore_rounded),
                             () {
                           resetLevel();
-                        },times: resetTimes.toString()),
-                        buildClickButton(
-                            const Icon(Icons.keyboard_backspace_rounded), () {
-                          GlobalPageRouter.replace(Pages.home, context);
-                        }),
+                        }, times: resetTimes.toString()),
                       ],
                     ))
               ],
