@@ -8,6 +8,8 @@ class TextLine {
   String text;
   double? fontSize;
   String? dot;
+  String? fontFamily;
+  FontWeight? fontWeight;
 
   TextLine({
     required this.bgColor,
@@ -15,6 +17,8 @@ class TextLine {
     required this.text,
     this.fontSize,
     this.dot,
+    this.fontFamily,
+    this.fontWeight = FontWeight.w900,
   });
 }
 
@@ -124,8 +128,9 @@ class TypingTextState extends State<TypingText> {
             displayedText,
             style: TextStyle(
                 fontSize: fontSize,
+                fontFamily: widget.lines[_configIndex].fontFamily,
                 color: widget.lines[_configIndex].textColor,
-                fontWeight: FontWeight.bold),
+                fontWeight: widget.lines[_configIndex].fontWeight),
           ),
         )),
       ),

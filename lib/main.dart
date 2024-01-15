@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'pages/home.dart';
+import 'commons/storage_manager.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +24,35 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    initLocate();
+  }
+
+  toggleLang() async {
+    if (nowLocale.languageCode == 'en') {
+      await StorageManager().setString(StorageManager.KEY_LANGUAGE, 'zh');
+      setLocate(const Locale('zh'));
+    } else {
+      await StorageManager().setString(StorageManager.KEY_LANGUAGE, 'en');
+      setLocate(const Locale('en'));
+    }
+  }
+
+  initLocate() async {
+    String lang = await StorageManager()
+        .getString(StorageManager.KEY_LANGUAGE, defValue: 'en');
+    print('object:$lang');
+    lang = 'zh';
+    setState(() {
+      nowLocale = Locale(lang);
+    });
+  }
+
+  Locale nowLocale = const Locale('en');
+
+  setLocate(Locale newLocate) {
+    setState(() {
+      nowLocale = newLocate;
+    });
   }
 
   @override
@@ -41,23 +73,6 @@ class MyAppState extends State<MyApp> {
     // appBarTheme: AppBarTheme(backgroundColor: JiaColors.backgroundColor),
   );
 
-  ThemeData darkTheme = ThemeData(
-    // colorScheme: ColorScheme.fromSeed(seedColor: JiaColors.brand),
-    // useMaterial3: true,
-    primaryColor: const Color(0xFFD9D1A9),
-    primaryIconTheme: const IconThemeData(color: Color(0xFFFFFFFF), size: 30),
-    iconTheme: const IconThemeData(color: Color(0xFFFFFFFF), size: 25),
-    scaffoldBackgroundColor: Colors.black,
-    splashColor: Colors.transparent,
-    highlightColor: Colors.transparent,
-    splashFactory: NoSplash.splashFactory,
-    // appBarTheme: AppBarTheme(backgroundColor: JiaColors.backgroundColor),
-  );
-
-  bool isDarkMode(BuildContext context) {
-    return MediaQuery.of(context).platformBrightness == Brightness.dark;
-  }
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -67,7 +82,10 @@ class MyAppState extends State<MyApp> {
       initialRoute: '/',
       home: const HomePage(),
       debugShowCheckedModeBanner: false,
-      theme: isDarkMode(context) ? darkTheme : lightTheme,
+      theme: lightTheme,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: nowLocale,
     );
   }
 }

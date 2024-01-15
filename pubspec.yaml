@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  intl: any
+  shared_preferences: ^2.2.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -54,14 +56,26 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  fonts:
+    - family: Baloo2
+      fonts:
+        - asset: assets/fonts/Baloo2-Regular.ttf
+        - asset: assets/fonts/Baloo2-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Baloo2-ExtraBold.ttf
+          weight: 900
+    - family: Mpo
+      fonts:
+        - asset: assets/fonts/MochiyPopOne-Regular.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  generate: true
   uses-material-design: true
   assets:
     - assets/
-    - assets/img/
+    - assets/image/
+    - assets/box/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

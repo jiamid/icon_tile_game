@@ -1,0 +1,19 @@
+{
+  "tileZoo": "Tile Zoo",
+  "playGame": "开始游戏",
+  "level": "第{levelNum}关",
+  "@level": {
+    "placeholders": {
+      "levelNum": {
+        "type": "num"
+      }
+    }
+  },
+  "gameFailMsg": "失败是常有的事情",
+  "home": "返回大厅",
+  "restart": "重新开始",
+  "gameSuccessMsg": "你通过了最终的考验！！！",
+  "replay": "再来一次",
+  "language": "语言",
+  "langCode": "zh"
+}

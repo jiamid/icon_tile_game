@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../router/router_manager.dart';
 import '/custom_widget/typing_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,29 +13,22 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   List<TextLine> welcomeLines = [
     TextLine(
-        bgColor: Colors.black,
-        textColor: Colors.white,
-        text: '这是一个简单的小游戏',
-        fontSize: 25),
-    TextLine(
-        bgColor: Colors.black,
-        textColor: Colors.white,
-        text: '通过收集三个相同的图标来消除它们',
-        fontSize: 25),
-    TextLine(
-        bgColor: const Color(0xFF000000),
-        textColor: Colors.red,
-        text: '你的任务是将画面中的所有图标消除!!!',
-        fontSize: 25),
-    TextLine(
-        bgColor: const Color(0xFF260C10),
-        textColor: const Color(0xFFFFFFFF),
-        text: '你有7个格子\n请不要把它们用光了！',
+        bgColor: const Color(0xFFFCE0B7),
+        textColor: Colors.black,
+        text: 'Damn!!!',
+        fontFamily: 'Baloo2',
         fontSize: 30),
     TextLine(
-        bgColor: Colors.white,
-        textColor: Colors.black,
-        text: '开始游戏请点击下方按钮\n没看清再看一遍',
+        bgColor: const Color(0xFFFCE0B7),
+        textColor: Colors.white,
+        text: 'So many pigs\nentered my zoo ',
+        fontFamily: 'Baloo2',
+        fontSize: 30),
+    TextLine(
+        bgColor: const Color(0xFFFCE0B7),
+        textColor: Colors.red,
+        text: 'Tile It!!!',
+        fontFamily: 'Baloo2',
         fontSize: 30),
     // TextLine(
     //     bgColor: Colors.white, textColor: Colors.black, text: 'Hello Jiamid!'),
@@ -42,25 +36,7 @@ class HomePageState extends State<HomePage> {
     //     bgColor: Colors.white, textColor: Colors.red, text: 'Love & Peace!'),
   ];
 
-  List<TextLine> buttonLines = [
-    TextLine(
-        bgColor: Colors.white,
-        textColor: Colors.black,
-        text: '勇士！！！',
-        dot: '',
-        fontSize: 40),
-    TextLine(
-        bgColor: Colors.white,
-        textColor: Colors.black,
-        text: '点击这里',
-        fontSize: 40),
-    TextLine(
-        bgColor: Colors.black,
-        textColor: Colors.white,
-        text: '开始游戏',
-        dot: '',
-        fontSize: 40),
-  ];
+  List<TextLine> buttonLines = [];
 
   @override
   void initState() {
@@ -106,9 +82,22 @@ class HomePageState extends State<HomePage> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(40, 0, 40, 40),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(18),
                       child: TypingText(
-                        lines: buttonLines,
+                        lines: [
+                          TextLine(
+                              bgColor: Colors.black,
+                              textColor: Colors.white,
+                              text:
+                                  '${AppLocalizations.of(context)!.playGame}!',
+                              dot: '',
+                              fontFamily:
+                                  AppLocalizations.of(context)!.langCode == 'zh'
+                                      ? 'Baloo2'
+                                      : 'Baloo2',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 40),
+                        ],
                         hapticStatus: false,
                         loop: false,
                       ),

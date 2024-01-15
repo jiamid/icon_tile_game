@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../router/router_manager.dart';
 import '/custom_widget/typing_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GameOverPage extends StatefulWidget {
   GameOverPage({super.key, this.gameStatus = false});
@@ -12,46 +13,6 @@ class GameOverPage extends StatefulWidget {
 }
 
 class GameOverPageState extends State<GameOverPage> {
-  List<TextLine> successLines = [
-    TextLine(
-        bgColor: Colors.white,
-        textColor: Colors.red,
-        text: '太棒了！！！',
-        fontSize: 30),
-    TextLine(
-        bgColor: Colors.black,
-        textColor: Colors.white,
-        text: '你通过了最终的考验！！！',
-        fontSize: 30),
-    TextLine(
-        bgColor: const Color(0xFF000000),
-        textColor: Colors.white,
-        text: '不愧是你!!!',
-        fontSize: 30),
-  ];
-
-  List<TextLine> failLines = [
-    TextLine(
-        bgColor: Colors.white,
-        textColor: Colors.black,
-        text: '失败是常有的事情',
-        fontSize: 40),
-    TextLine(
-        bgColor: Colors.black,
-        textColor: Colors.white,
-        text: '再来一次',
-        fontSize: 40),
-  ];
-
-  List<TextLine> reLines = [
-    TextLine(
-        bgColor: Colors.black,
-        textColor: Colors.white,
-        text: '再来一次',
-        dot: '',
-        fontSize: 40),
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -60,6 +21,30 @@ class GameOverPageState extends State<GameOverPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  genLines(bool status) {
+    if (status) {
+      List<TextLine> successLines = [
+        TextLine(
+            bgColor: Colors.white,
+            textColor: Colors.red,
+            text: AppLocalizations.of(context)!.gameSuccessMsg,
+            fontFamily: 'Baloo2',
+            fontSize: 30)
+      ];
+      return successLines;
+    } else {
+      List<TextLine> failLines = [
+        TextLine(
+            bgColor: Colors.white,
+            textColor: Colors.black,
+            text: AppLocalizations.of(context)!.gameFailMsg,
+            fontFamily: 'Baloo2',
+            fontSize: 40)
+      ];
+      return failLines;
+    }
   }
 
   @override
@@ -81,7 +66,7 @@ class GameOverPageState extends State<GameOverPage> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: TypingText(
-                    lines: widget.gameStatus ? successLines : failLines,
+                    lines: genLines(widget.gameStatus),
                   ),
                 ),
               ),
@@ -98,7 +83,15 @@ class GameOverPageState extends State<GameOverPage> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: TypingText(
-                        lines: reLines,
+                        lines: [
+                          TextLine(
+                              bgColor: Colors.black,
+                              textColor: Colors.white,
+                              text: AppLocalizations.of(context)!.replay,
+                              dot: '',
+                              fontFamily: 'Baloo2',
+                              fontSize: 40),
+                        ],
                         hapticStatus: false,
                         loop: false,
                       ),

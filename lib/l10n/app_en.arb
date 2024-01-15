@@ -1,0 +1,19 @@
+{
+  "tileZoo": "Tile Zoo",
+  "playGame": "Play Game",
+  "level": "level {levelNum}",
+  "@level": {
+    "placeholders": {
+      "levelNum": {
+        "type": "num"
+      }
+    }
+  },
+  "gameFailMsg": "You Lose",
+  "home": "Home",
+  "restart": "Restart",
+  "gameSuccessMsg": "Super Win",
+  "replay": "Replay",
+  "language": "Language",
+  "langCode": "en"
+}

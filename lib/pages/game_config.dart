@@ -1,52 +1,34 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'dart:ui';
 
-Map boxColorMap = {
-  0: Colors.black12,
-  1: Colors.redAccent,
-  2: Colors.greenAccent,
-  3: Colors.amber,
-  4: Colors.blue,
-  5: Colors.purple,
-  6: Colors.grey,
-  7: Colors.white,
-  8: Colors.lightBlue,
-  9: Colors.green,
-  10: Colors.red,
-  11: Colors.yellowAccent,
-  12: Colors.pinkAccent,
-  13: Colors.brown,
-  14: Colors.teal,
-  15: Colors.deepPurpleAccent,
-  16: Colors.tealAccent,
-  17: Colors.deepPurple,
-  18: Colors.blueGrey,
+Color generateRandomColor() {
+  Random random = Random();
+  return Color.fromARGB(
+    255,
+    255 - random.nextInt(255), // 生成 0 到 255 之间的随机值作为红色分量
+    random.nextInt(255), // 生成 0 到 255 之间的随机值作为绿色分量
+    random.nextInt(255), // 生成 0 到 255 之间的随机值作为蓝色分量
+  );
+}
 
-};
-final List<int> allType = [
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18
-];
+Map generateRandomColorMap(int num) {
+  Map boxColorMap = {
+    for (var index in List.generate(num, (index) => index + 1))
+      index: generateRandomColor()
+  };
+  boxColorMap.addAll({0: Colors.transparent});
+  return boxColorMap;
+}
+
+final List<int> allType = List.generate(26, (index) => index + 1);
+
+Map boxColorMap = generateRandomColorMap(26);
 
 final Map<int, Map<int, List<int>>> levelOffsetMap = {
   1: {
     0: [5, 5, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7, 7],
-    1: [1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7, 7]
+    1: [1, 12, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7, 7]
   },
   3: {
     0: [
@@ -90,15 +72,21 @@ Map<int, List<int>> levelTypeMap = {
 Map<int, List<List<List<int>>>> levelMap = {
   1: [
     [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
+      [-1, -1, -1, -1, -1, -1, -1],
+      [-1, 0, -1, 0, -1, 0, -1],
+      [-1, -1, -1, -1, -1, -1, -1],
+      [-1, 0, -1, 0, -1, 0, -1],
+      [-1, -1, -1, -1, -1, -1, -1],
+      [-1, 0, -1, 0, -1, 0, -1],
     ],
     [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0]
-    ]
+      [-1, -1, -1, -1, -1, -1, -1],
+      [-1, 0, -1, 0, -1, 0, -1],
+      [-1, -1, -1, -1, -1, -1, -1],
+      [-1, 0, -1, 0, -1, 0, -1],
+      [-1, -1, -1, -1, -1, -1, -1],
+      [-1, 0, -1, 0, -1, 0, -1],
+    ],
   ],
   2: [
     [
