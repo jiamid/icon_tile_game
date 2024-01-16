@@ -7,6 +7,7 @@ import '../router/router_manager.dart';
 import '../custom_widget/box_animation.dart' show runFlyBoxAnimate;
 import 'game_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../commons/ui_config.dart';
 
 class GameRoomPage extends StatefulWidget {
   const GameRoomPage({super.key});
@@ -15,8 +16,7 @@ class GameRoomPage extends StatefulWidget {
   GameRoomPageState createState() => GameRoomPageState();
 }
 
-class GameRoomPageState extends State<GameRoomPage>
-     {
+class GameRoomPageState extends State<GameRoomPage> {
   @override
   void initState() {
     super.initState();
@@ -98,12 +98,15 @@ class GameRoomPageState extends State<GameRoomPage>
     var lastOne = historyList[historyList.length - 1];
     myBox.removeAt(lastOne['boxIndex']);
     historyList.removeLast();
+    Color bgColor = lightenColor(boxColorMap[lastOne['type']], 0.95);
+    Color borderColor = darkenColor(boxColorMap[lastOne['type']], 0.1);
+
     goBackStatus = true;
     runFlyBoxAnimate(
         context,
         lastOne['endOffset'],
         lastOne['startOffset'],
-        boxColorMap[lastOne['type']],
+        bgColor,
         oneBarWidth - 10,
         lastOne['startWidth'],
         'assets/box/${lastOne['type']}.webp', () {
@@ -111,7 +114,7 @@ class GameRoomPageState extends State<GameRoomPage>
         gameMap[lastOne['f']][lastOne['y']][lastOne['x']] = lastOne['type'];
       }
       setState(() {});
-    });
+    }, borderColor: borderColor);
     goBackTimes -= 1;
     setState(() {});
   }
@@ -290,32 +293,29 @@ class GameRoomPageState extends State<GameRoomPage>
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                // 点击的时候获取当前 widget 的位置，传入 overlayEntry
-                RenderBox box = c.findRenderObject() as RenderBox;
-                var startOffset = box.localToGlobal(Offset.zero);
-                if (!checkPositioned(c, width)) {
-                  return;
-                }
-                var thisBox = {'type': boxType, 'status': 0};
-                var endOffset =
-                    addBoxStart(thisBox, f, y, x, startOffset, width);
-                if (endOffset == null) {
-                  return;
-                }
+                try {
+                  // 点击的时候获取当前 widget 的位置，传入 overlayEntry
+                  RenderBox box = c.findRenderObject() as RenderBox;
+                  var startOffset = box.localToGlobal(Offset.zero);
+                  if (!checkPositioned(c, width)) {
+                    return;
+                  }
+                  var thisBox = {'type': boxType, 'status': 0};
+                  var endOffset =
+                      addBoxStart(thisBox, f, y, x, startOffset, width);
+                  if (endOffset == null) {
+                    return;
+                  }
 
-                runFlyBoxAnimate(
-                    c,
-                    startOffset,
-                    endOffset,
-                    bgColor,
-                    width,
-                    oneBarWidth - 10,
-                    'assets/box/$boxType.webp', () {
-                  thisBox['status'] = 1;
-                  setState(() {});
-                  chickBox();
-                },borderColor: borderColor
-                );
+                  runFlyBoxAnimate(c, startOffset, endOffset, bgColor, width,
+                      oneBarWidth - 10, 'assets/box/$boxType.webp', () {
+                    thisBox['status'] = 1;
+                    setState(() {});
+                    chickBox();
+                  }, borderColor: borderColor);
+                } catch (e) {
+                  print('error:$e');
+                }
               },
               child: Container(
                 width: width - 1,
@@ -354,13 +354,13 @@ class GameRoomPageState extends State<GameRoomPage>
       height: boxHeight,
       width: boxWidth,
       decoration: BoxDecoration(
-        color: Colors.black26,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.black54, // 边框颜色
-          width: 2.0, // 边框宽度
-        ),
-      ),
+          color: const Color(0xFFFCE0B7),
+          borderRadius: BorderRadius.circular(10),
+          // border: Border.all(
+          //   color: Colors.black54, // 边框颜色
+          //   width: 2.0, // 边框宽度
+          // ),
+          boxShadow: [BoxShadow(color: shadowColor, offset: shadowOffset)]),
     );
     List<Widget> allFloor = [
       base,
@@ -409,47 +409,22 @@ class GameRoomPageState extends State<GameRoomPage>
               borderRadius: BorderRadius.circular(20),
               color: Colors.red,
             ),
-            child: Text(times),
-          )));
-    }
-    return Stack(children: stackChildren);
-  }
-
-  buildClickButton(child, onPressed, {times}) {
-    List<Widget> stackChildren = [
-      SizedBox(
-          height: 60,
-          width: 60,
-          child: ElevatedButton(
-            style: ButtonStyle(
-                textStyle: MaterialStateProperty.all(
-                    const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                // foregroundColor: MaterialStateProperty.all(Colors.cyan),
-                // overlayColor: MaterialStateProperty.all(pickColor.withAlpha(50)),
-                backgroundColor: MaterialStateProperty.all(Colors.black),
-                elevation: MaterialStateProperty.all(0),
-                // shadowColor: MaterialStateProperty.all(pickColor),
-                shape: MaterialStateProperty.all(
-                  const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(70)),
-                  ),
-                )),
-            onPressed: onPressed,
-            child: child,
-          )),
-    ];
-    if (times != null) {
-      stackChildren.add(Positioned(
-          left: 40,
-          child: Container(
-            height: 20,
-            width: 20,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.red,
+            child: Text(
+              times,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 20,
+                  height: 1.1,
+                  fontFamily: 'Baloo2',
+                  shadows: [
+                    Shadow(
+                        color: Color(0xFFB45509),
+                        blurRadius: 0,
+                        offset: Offset(0, 2))
+                  ],
+                  decoration: TextDecoration.none),
             ),
-            child: Text(times),
           )));
     }
     return Stack(children: stackChildren);
@@ -482,7 +457,7 @@ class GameRoomPageState extends State<GameRoomPage>
                             GlobalPageRouter.replace(Pages.home, context);
                           }),
                           const SizedBox(
-                            width: 40,
+                            width: 20,
                           ),
                           Expanded(
                             child: Container(
@@ -495,7 +470,7 @@ class GameRoomPageState extends State<GameRoomPage>
                                       fit: BoxFit.fill)),
                               child: Text(
                                 AppLocalizations.of(context)!.level(nowLevel),
-                                style: const TextStyle(
+                                style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w900,
                                     fontSize: 36,
@@ -503,9 +478,9 @@ class GameRoomPageState extends State<GameRoomPage>
                                     fontFamily: 'Baloo2',
                                     shadows: [
                                       Shadow(
-                                          color: Color(0xFFB45509),
+                                          color: shadowColor,
                                           blurRadius: 0,
-                                          offset: Offset(0, 2))
+                                          offset: shadowOffset)
                                     ],
                                     decoration: TextDecoration.none),
                               ),
@@ -523,16 +498,14 @@ class GameRoomPageState extends State<GameRoomPage>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        buildClickButton(
-                            const Icon(Icons.screen_rotation_alt_rounded), () {
+                        buildClickImageButton('assets/image/reset_level.webp',
+                            () {
                           refreshMap();
                         }, times: refreshTimes.toString()),
-                        buildClickButton(const Icon(Icons.swipe_left), () {
+                        buildClickImageButton('assets/image/go_back.webp', () {
                           goBack();
                         }, times: goBackTimes.toString()),
-                        buildClickButton(
-                            const Icon(Icons.settings_backup_restore_rounded),
-                            () {
+                        buildClickImageButton('assets/image/clean.webp', () {
                           resetLevel();
                         }, times: resetTimes.toString()),
                       ],
@@ -555,13 +528,13 @@ class GameRoomPageState extends State<GameRoomPage>
       height: oneBarWidth + 6,
       width: width,
       decoration: BoxDecoration(
-        color: Colors.black26,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.black54, // 边框颜色
-          width: 2.0, // 边框宽度
-        ),
-      ),
+          color: const Color(0xFFFCE0B7),
+          borderRadius: BorderRadius.circular(5),
+          // border: Border.all(
+          //   color: Colors.black54, // 边框颜色
+          //   width: 2.0, // 边框宽度
+          // ),
+          boxShadow: [BoxShadow(color: shadowColor, offset: shadowOffset)]),
     );
     List<Widget> boxItems = [base];
     for (int index = 0; index < boxKeyList.length; index++) {
@@ -581,7 +554,7 @@ class GameRoomPageState extends State<GameRoomPage>
               width: oneBarWidth - 10,
               height: oneBarWidth - 10,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(5),
                 border: Border.all(
                   color: borderColor, // 边框颜色
                   width: 2.0, // 边框宽度
@@ -590,7 +563,7 @@ class GameRoomPageState extends State<GameRoomPage>
               ),
               child: oneChoice != 0
                   ? ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(4),
                       child: Image.asset(
                         'assets/box/$oneChoice.webp',
                         fit: BoxFit.cover,

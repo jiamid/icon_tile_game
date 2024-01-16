@@ -21,14 +21,18 @@ Map generateRandomColorMap(int num) {
   return boxColorMap;
 }
 
-final List<int> allType = List.generate(26, (index) => index + 1);
+final List<int> allType = List.generate(28, (index) => index + 1);
 
-Map boxColorMap = generateRandomColorMap(26);
+Map boxColorMap = generateRandomColorMap(28);
 
 final Map<int, Map<int, List<int>>> levelOffsetMap = {
   1: {
     0: [5, 5, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7, 7],
     1: [1, 12, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7, 7]
+  },
+  2: {
+    0: [5, 5, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7, 7],
+    1: [1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7, 7]
   },
   3: {
     0: [

@@ -55,8 +55,10 @@ class BoxAnimationPageState extends State<BoxAnimationPage>
       var t = _animation.value;
       if (mounted) {
         setState(() {
-          left = pow(1 - t, 2) * x0 + pow(t, 2) * x2;
-          top = pow(1 - t, 2) * y0 + pow(t, 2) * y2;
+          // left = pow(1 - t, 2) * x0 + pow(t, 2) * x2;
+          // top = pow(1 - t, 2) * y0 + pow(t, 2) * y2;
+          left = (1 - t) * x0 + t * x2;
+          top = (1 - t) * y0 + t * y2;
         });
       }
     });
@@ -83,7 +85,7 @@ class BoxAnimationPageState extends State<BoxAnimationPage>
             width: thisWidth,
             height: thisWidth,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(5),
               border: Border.all(
                 color: widget.borderColor ?? widget.color, // 边框颜色
                 width: 2.0, // 边框宽度
@@ -91,7 +93,7 @@ class BoxAnimationPageState extends State<BoxAnimationPage>
               color: widget.color,
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(4),
               child: Image.asset(
                 widget.img,
                 fit: BoxFit.cover,
