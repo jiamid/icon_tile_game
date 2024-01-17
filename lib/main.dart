@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:icon_tile_game/custom_widget/loading_page.dart';
 import 'pages/home.dart';
 import 'commons/storage_manager.dart';
 import 'commons/global_manager.dart';
@@ -68,11 +69,21 @@ class MyAppState extends State<MyApp> {
     primaryIconTheme: const IconThemeData(color: Color(0xFF0C0C0B), size: 30),
     iconTheme: const IconThemeData(color: Color(0xFF0C0C0B), size: 25),
     scaffoldBackgroundColor: const Color(0xFFD79D49),
+
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     splashFactory: NoSplash.splashFactory,
     // appBarTheme: AppBarTheme(backgroundColor: JiaColors.backgroundColor),
   );
+
+
+
+  // Pages.fakeLoadingPage, context,
+  // arguments: {
+  // 'duration': const Duration(milliseconds: 500),
+  // 'nextPage': Pages.index,
+  // 'args': {}
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +93,7 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       key: GlobalManager().globalKey,
       initialRoute: '/',
-      home: const HomePage(),
+      home:  const FakeLoadingPage(duration: Duration(milliseconds: 500),nextPage: HomePage,),
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

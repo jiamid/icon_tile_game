@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import '../custom_widget/background_box.dart';
+import '../custom_widget/key_red_button.dart';
+import '../custom_widget/key_zoo_board.dart';
 import '../router/router_manager.dart';
 import '/custom_widget/typing_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GameOverPage extends StatefulWidget {
-  GameOverPage({super.key, this.gameStatus = false});
+  const GameOverPage({super.key, this.gameStatus = false});
 
-  bool gameStatus;
+  final bool gameStatus;
 
   @override
   GameOverPageState createState() => GameOverPageState();
@@ -23,84 +26,46 @@ class GameOverPageState extends State<GameOverPage> {
     super.dispose();
   }
 
-  genLines(bool status) {
-    if (status) {
-      List<TextLine> successLines = [
-        TextLine(
-            bgColor: Colors.white,
-            textColor: Colors.red,
-            text: AppLocalizations.of(context)!.gameSuccessMsg,
-            fontFamily: 'Baloo2',
-            fontSize: 30)
-      ];
-      return successLines;
-    } else {
-      List<TextLine> failLines = [
-        TextLine(
-            bgColor: Colors.white,
-            textColor: Colors.black,
-            text: AppLocalizations.of(context)!.gameFailMsg,
-            fontFamily: 'Baloo2',
-            fontSize: 40)
-      ];
-      return failLines;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Color goTextColor = Color.fromRGBO(
-    //         255 - Theme.of(context).scaffoldBackgroundColor.red,
-    //         255 - Theme.of(context).scaffoldBackgroundColor.green,
-    //         255 - Theme.of(context).scaffoldBackgroundColor.blue,
-    //         0.5)
-    //     .withAlpha(255);
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(40),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: TypingText(
-                    lines: genLines(widget.gameStatus),
-                  ),
-                ),
+      body: BackgroundBox(
+        image: const AssetImage('assets/image/bg.webp'),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 40,
               ),
-            ),
-            SizedBox(
-              height: 120,
-              child: Center(
-                child: InkWell(
-                  onTap: () {
-                    GlobalPageRouter.replace(Pages.index, context);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(40, 0, 40, 40),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: TypingText(
-                        lines: [
-                          TextLine(
-                              bgColor: Colors.black,
-                              textColor: Colors.white,
-                              text: AppLocalizations.of(context)!.replay,
-                              dot: '',
-                              fontFamily: 'Baloo2',
-                              fontSize: 40),
-                        ],
-                        hapticStatus: false,
-                        loop: false,
-                      ),
+              Expanded(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      height: 220,
+                      child: KeyZooBoard(
+                        data: widget.gameStatus
+                            ? AppLocalizations.of(context)!.gameSuccessMsg
+                            : AppLocalizations.of(context)!.gameFailMsg,
+                        fontSize: 54,
+                      )),
+                  SizedBox(
+                    height: 120,
+                    child: Center(
+                      child: Padding(
+                          padding: const EdgeInsets.all(22),
+                          child: KeyRedButton(
+                            data: AppLocalizations.of(context)!.replay,
+                            onTap: () {
+                              GlobalPageRouter.replace(Pages.gameRoom, context);
+                            },
+                          )),
                     ),
                   ),
-                ),
-              ),
-            ),
-          ],
+                ],
+              ))
+            ],
+          ),
         ),
       ),
     );

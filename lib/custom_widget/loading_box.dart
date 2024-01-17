@@ -34,7 +34,7 @@ class LoadingBox extends StatelessWidget {
               color: const Color(0xFFFCE0B7),
               borderRadius: BorderRadius.circular(999),
               border: Border.all(
-                color: const Color(0xFFEA7211), // 边框颜色
+                color: const Color(0xFFFF871f), // 边框颜色
                 width: 1, // 边框宽度
               ),
             ),
@@ -52,10 +52,17 @@ class LoadingBox extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xFFE5CCAC),
-                  Color(0xFFEA7211),
+                  Color(0xFFFEE286),
+                  Color(0xFFFFD49D),
+                  Color(0xFFFF9B2F),
                 ],
               ),
+              boxShadow: const [
+                BoxShadow(
+                    color: Color(0x88FF871f),
+                    offset: Offset(0, 4),
+                    blurRadius: 12)
+              ],
               borderRadius: BorderRadius.circular(999),
             ),
           ),
@@ -63,7 +70,7 @@ class LoadingBox extends StatelessWidget {
         Positioned(
           left: nowBarWidth,
           child: Transform.rotate(
-            angle: nowRate*(3.14)*2,
+            angle: nowRate * (3.14) * 2,
             child: Image.asset(
               'assets/image/loading_flag.webp',
               width: trueHeight,

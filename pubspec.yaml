@@ -60,13 +60,10 @@ flutter:
     - family: Baloo2
       fonts:
         - asset: assets/fonts/Baloo2-Regular.ttf
-        - asset: assets/fonts/Baloo2-Bold.ttf
-          weight: 700
+#        - asset: assets/fonts/Baloo2-Bold.ttf
+#          weight: 700
         - asset: assets/fonts/Baloo2-ExtraBold.ttf
           weight: 900
-    - family: Mpo
-      fonts:
-        - asset: assets/fonts/MochiyPopOne-Regular.ttf
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -115,4 +112,4 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon.webp"
+  image_path: "assets/logo.webp"

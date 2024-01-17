@@ -7,7 +7,7 @@ import '../custom_widget/loading_page.dart';
 
 class Pages {
   static const home = HomePage;
-  static const index = GameRoomPage;
+  static const gameRoom = GameRoomPage;
   static const gameOver = GameOverPage;
   static const fakeLoadingPage = FakeLoadingPage;
 }

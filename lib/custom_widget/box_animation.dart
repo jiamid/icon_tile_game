@@ -11,6 +11,7 @@ class BoxAnimationPage extends StatefulWidget {
   final String img;
   final double startWidth;
   final double endWidth;
+  final double radius;
 
   const BoxAnimationPage({
     super.key,
@@ -22,6 +23,7 @@ class BoxAnimationPage extends StatefulWidget {
     required this.startWidth,
     required this.endWidth,
     this.borderColor,
+    this.radius = 8,
   });
 
   @override
@@ -85,7 +87,7 @@ class BoxAnimationPageState extends State<BoxAnimationPage>
             width: thisWidth,
             height: thisWidth,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(widget.radius),
               border: Border.all(
                 color: widget.borderColor ?? widget.color, // 边框颜色
                 width: 2.0, // 边框宽度
@@ -93,7 +95,7 @@ class BoxAnimationPageState extends State<BoxAnimationPage>
               color: widget.color,
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(widget.radius - 2),
               child: Image.asset(
                 widget.img,
                 fit: BoxFit.cover,

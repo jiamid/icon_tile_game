@@ -1,6 +1,6 @@
 {
   "tileZoo": "Tile Zoo",
-  "playGame": "Play Game",
+  "playGame": "PLAY",
   "level": "level {levelNum}",
   "@level": {
     "placeholders": {

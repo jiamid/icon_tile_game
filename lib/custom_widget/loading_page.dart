@@ -3,6 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '../custom_widget/loading_box.dart';
 import '../router/router_manager.dart';
+import 'background_box.dart';
+import 'key_zoo_board.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class FakeLoadingPage extends StatefulWidget {
   const FakeLoadingPage(
@@ -52,31 +56,39 @@ class FakeLoadingPageState extends State<FakeLoadingPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: BackgroundBox(
+        image: const AssetImage('assets/image/bg.webp'),
+        child: SafeArea(
+            child: Column(
           children: [
-            SizedBox(
-              height: 120,
-              child: Container(
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          'assets/image/tile_zoo.webp'),
-                    )),
+            const SizedBox(
+              height: 40,
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 220,
+                    child: KeyZooBoard(
+                      data: AppLocalizations.of(context)!.tileZoo,
+                      fontSize: 64,
+                    ),
+                  ),
+                  Container(
+                    height: 120,
+                    alignment: Alignment.center,
+                    child: LoadingBox(
+                      nowRate: nowRate,
+                      width: 300,
+                      height: 40,
+                    ),
+                  )
+                ],
               ),
             ),
-            Container(
-              alignment: Alignment.center,
-              child: LoadingBox(
-                nowRate: nowRate,
-                width: 300,
-                height: 40,
-              ),
-            )
           ],
-        ),
+        )),
       ),
     );
   }

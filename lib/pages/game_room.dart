@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:icon_tile_game/custom_widget/background_box.dart';
+import '../custom_widget/image_icon_button.dart';
 import '../custom_widget/typing_text.dart';
 import '../router/router_manager.dart';
 import '../custom_widget/box_animation.dart' show runFlyBoxAnimate;
@@ -291,7 +293,7 @@ class GameRoomPageState extends State<GameRoomPage> {
       builder: (c) {
         return Material(
             color: Colors.transparent,
-            child: InkWell(
+            child: GestureDetector(
               onTap: () {
                 try {
                   // 点击的时候获取当前 widget 的位置，传入 overlayEntry
@@ -321,7 +323,7 @@ class GameRoomPageState extends State<GameRoomPage> {
                 width: width - 1,
                 height: width - 1,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(boxRadius),
                   border: Border.all(
                     color: borderColor, // 边框颜色
                     width: 2, // 边框宽度
@@ -329,7 +331,7 @@ class GameRoomPageState extends State<GameRoomPage> {
                   color: bgColor,
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(boxRadius - 2),
                   child: Image.asset(
                     'assets/box/$boxType.webp',
                     fit: BoxFit.cover,
@@ -354,13 +356,13 @@ class GameRoomPageState extends State<GameRoomPage> {
       height: boxHeight,
       width: boxWidth,
       decoration: BoxDecoration(
-          color: const Color(0xFFFCE0B7),
-          borderRadius: BorderRadius.circular(10),
-          // border: Border.all(
-          //   color: Colors.black54, // 边框颜色
-          //   width: 2.0, // 边框宽度
-          // ),
-          boxShadow: [BoxShadow(color: shadowColor, offset: shadowOffset)]),
+        color: const Color(0xFFA07846),
+        borderRadius: const BorderRadius.vertical(
+            top: Radius.zero, bottom: Radius.circular(16)),
+        border: Border.all(
+          color: const Color(0xFFA07846),
+        ),
+      ),
     );
     List<Widget> allFloor = [
       base,
@@ -388,130 +390,36 @@ class GameRoomPageState extends State<GameRoomPage> {
     );
   }
 
-  buildClickImageButton(imgPath, onPressed, {times}) {
-    List<Widget> stackChildren = [
-      SizedBox(
-          height: 60,
-          width: 60,
-          child: InkWell(
-            onTap: onPressed,
-            child: Image.asset(imgPath),
-          )),
-    ];
-    if (times != null) {
-      stackChildren.add(Positioned(
-          left: 40,
-          child: Container(
-            height: 20,
-            width: 20,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.red,
-            ),
-            child: Text(
-              times,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 20,
-                  height: 1.1,
-                  fontFamily: 'Baloo2',
-                  shadows: [
-                    Shadow(
-                        color: Color(0xFFB45509),
-                        blurRadius: 0,
-                        offset: Offset(0, 2))
-                  ],
-                  decoration: TextDecoration.none),
-            ),
-          )));
-    }
-    return Stack(children: stackChildren);
-  }
-
   @override
   Widget build(BuildContext context) {
-    Color goTextColor = Color.fromRGBO(
-            255 - Theme.of(context).scaffoldBackgroundColor.red,
-            255 - Theme.of(context).scaffoldBackgroundColor.green,
-            255 - Theme.of(context).scaffoldBackgroundColor.blue,
-            0.5)
-        .withAlpha(255);
+    // Color goTextColor = Color.fromRGBO(
+    //         255 - Theme.of(context).scaffoldBackgroundColor.red,
+    //         255 - Theme.of(context).scaffoldBackgroundColor.green,
+    //         255 - Theme.of(context).scaffoldBackgroundColor.blue,
+    //         0.5)
+    //     .withAlpha(255);
     return Scaffold(
-        body: SafeArea(
-            bottom: false,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // 在这里添加你的界面元素
-                SizedBox(
-                    height: 100,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          buildClickImageButton('assets/image/back.webp', () {
-                            GlobalPageRouter.replace(Pages.home, context);
-                          }),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 52,
-                              alignment: Alignment.center,
-                              decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          'assets/image/rectangle_bg.webp'),
-                                      fit: BoxFit.fill)),
-                              child: Text(
-                                AppLocalizations.of(context)!.level(nowLevel),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 36,
-                                    height: 1.1,
-                                    fontFamily: 'Baloo2',
-                                    shadows: [
-                                      Shadow(
-                                          color: shadowColor,
-                                          blurRadius: 0,
-                                          offset: shadowOffset)
-                                    ],
-                                    decoration: TextDecoration.none),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ])),
-                buildMap(),
-                const Spacer(),
-                buildBarBox(),
-                SizedBox(
-                    height: 100,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        buildClickImageButton('assets/image/reset_level.webp',
-                            () {
-                          refreshMap();
-                        }, times: refreshTimes.toString()),
-                        buildClickImageButton('assets/image/go_back.webp', () {
-                          goBack();
-                        }, times: goBackTimes.toString()),
-                        buildClickImageButton('assets/image/clean.webp', () {
-                          resetLevel();
-                        }, times: resetTimes.toString()),
-                      ],
-                    ))
-              ],
-            )));
+      body: BackgroundBox(
+        // color: Colors.black54,
+        image: const AssetImage('assets/image/bg.webp'),
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildBackBar(),
+              buildHeader(),
+              buildMap(),
+              const SizedBox(
+                height: 20,
+              ),
+              buildChooseBox(),
+              buildPropBox()
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -519,22 +427,91 @@ class GameRoomPageState extends State<GameRoomPage> {
     super.dispose();
   }
 
+  buildBackBar() {
+    return SizedBox(
+      height: 25,
+      child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        buildImageButton('assets/image/icon_go_back.webp', () {
+          GlobalPageRouter.replace(Pages.home, context);
+        }),
+      ]),
+    );
+  }
+
+  buildHeader() {
+    var width = MediaQuery.of(context).size.width - 20;
+    var boxWidth = width + 4;
+    var a = Stack(
+      children: [
+        SizedBox(
+          width: boxWidth,
+          height: 104,
+        ),
+        Positioned(
+            bottom: 0,
+            child: Container(
+              width: boxWidth,
+              height: 30,
+              decoration: BoxDecoration(
+                color: const Color(0xFFA07846),
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.zero,
+                  top: Radius.circular(16),
+                ),
+                border: Border.all(
+                  color: const Color(0xFFA07846),
+                ),
+              ),
+            )),
+        Positioned(
+          bottom: 0,
+          child: Container(
+            width: boxWidth,
+            height: 108,
+            alignment: Alignment.bottomCenter,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/image/level_bg.webp'),
+                    fit: BoxFit.fitHeight)),
+            child: Text(
+              AppLocalizations.of(context)!.level(nowLevel),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 36,
+                  height: 1.5,
+                  fontFamily: 'Baloo2',
+                  shadows: [
+                    Shadow(
+                        color: shadowColor, blurRadius: 0, offset: shadowOffset)
+                  ],
+                  decoration: TextDecoration.none),
+            ),
+          ),
+        )
+      ],
+    );
+
+    return a;
+  }
+
   double oneBarWidth = 0;
 
-  buildBarBox() {
+  buildChooseBox() {
     var width = MediaQuery.of(context).size.width - 16;
     oneBarWidth = width / boxKeyList.length;
     var base = Container(
       height: oneBarWidth + 6,
       width: width,
       decoration: BoxDecoration(
-          color: const Color(0xFFFCE0B7),
-          borderRadius: BorderRadius.circular(5),
-          // border: Border.all(
-          //   color: Colors.black54, // 边框颜色
-          //   width: 2.0, // 边框宽度
-          // ),
-          boxShadow: [BoxShadow(color: shadowColor, offset: shadowOffset)]),
+        color: const Color(0xFFA07846),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: const Color(0xFFFFE8C8), // 边框颜色
+          width: 2.0, // 边框宽度
+        ),
+        // boxShadow: [BoxShadow(color: shadowColor, offset: shadowOffset)],
+      ),
     );
     List<Widget> boxItems = [base];
     for (int index = 0; index < boxKeyList.length; index++) {
@@ -554,7 +531,7 @@ class GameRoomPageState extends State<GameRoomPage> {
               width: oneBarWidth - 10,
               height: oneBarWidth - 10,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(boxRadius),
                 border: Border.all(
                   color: borderColor, // 边框颜色
                   width: 2.0, // 边框宽度
@@ -563,17 +540,52 @@ class GameRoomPageState extends State<GameRoomPage> {
               ),
               child: oneChoice != 0
                   ? ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(boxRadius - 2),
                       child: Image.asset(
                         'assets/box/$oneChoice.webp',
                         fit: BoxFit.cover,
                       ))
-                  : null),
+                  : Image.asset(
+                      'assets/image/one_box.webp',
+                      fit: BoxFit.cover,
+                    )),
         ),
       );
       boxItems.add(one);
     }
 
     return Stack(children: boxItems);
+  }
+
+  buildPropBox() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      child: SizedBox(
+        height: 100,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ImageIconButton(
+                image: 'assets/image/icon_refresh.webp',
+                onTap: () {
+                  refreshMap();
+                },
+                times: refreshTimes),
+            ImageIconButton(
+                image: 'assets/image/icon_back_step.webp',
+                onTap: () {
+                  goBack();
+                },
+                times: goBackTimes),
+            ImageIconButton(
+                image: 'assets/image/icon_reset.webp',
+                onTap: () {
+                  resetLevel();
+                },
+                times: resetTimes),
+          ],
+        ),
+      ),
+    );
   }
 }
