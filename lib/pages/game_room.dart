@@ -471,7 +471,7 @@ class GameRoomPageState extends State<GameRoomPage> {
             alignment: Alignment.bottomCenter,
             decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/image/level_bg.webp'),
+                    image: AssetImage('assets/image/key_level_bg.webp'),
                     fit: BoxFit.fitHeight)),
             child: Text(
               AppLocalizations.of(context)!.level(nowLevel),
@@ -546,7 +546,7 @@ class GameRoomPageState extends State<GameRoomPage> {
                         fit: BoxFit.cover,
                       ))
                   : Image.asset(
-                      'assets/image/one_box.webp',
+                      'assets/image/fake_box_border.webp',
                       fit: BoxFit.cover,
                     )),
         ),
