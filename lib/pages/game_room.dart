@@ -29,7 +29,7 @@ class GameRoomPageState extends State<GameRoomPage>
     boxAnimatedContainerList = List.generate(
         7,
         (index) => AnimationController(
-            vsync: this, duration: const Duration(milliseconds: 450)));
+            vsync: this, duration: const Duration(milliseconds: 300)));
     initMap();
   }
 
@@ -74,7 +74,7 @@ class GameRoomPageState extends State<GameRoomPage>
     return list.removeAt(randomIndex);
   }
 
-  int nowLevel = 8;
+  int nowLevel = 1;
   int mapMaxWidth = 3;
   List<List<List<int>>> gameMap = [];
 
@@ -233,7 +233,6 @@ class GameRoomPageState extends State<GameRoomPage>
       temp[thisType] = nums;
       if (nums.length >= 3) {
         for (int i = 0; i < 3; i++) {
-          // runBoo(nums[i]);
           boxAnimatedContainerList[nums[i]].reset();
           boxAnimatedContainerList[nums[i]].forward();
           myBox.removeAt(nums[i]);
