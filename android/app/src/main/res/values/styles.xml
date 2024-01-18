@@ -5,14 +5,14 @@
         <!-- Show a splash screen on the activity. Automatically removed when
              the Flutter engine draws its first frame -->
         <item name="android:windowBackground">@drawable/launch_background</item>
-    </style>
-    <!-- Theme applied to the Android Window as soon as the process has started.
-         This theme determines the color of the Android Window while your
-         Flutter UI initializes, as well as behind your Flutter UI while its
-         running.
 
-         This Theme is only used starting with V2 of Flutter's Android embedding. -->
-    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
-        <item name="android:windowBackground">?android:colorBackground</item>
+<!--        &lt;!&ndash; 启动画面中间显示的图标，默认使用应用图标 &ndash;&gt;-->
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/icon</item>
+<!--        &lt;!&ndash; 启动画面底部的图片。 &ndash;&gt;-->
+<!--        <item name="android:windowSplashScreenBrandingImage">@drawable/launch_background</item>-->
+<!--        &lt;!&ndash; 启动画面背景色。 &ndash;&gt;-->
+        <item name="android:windowSplashScreenBackground">@color/bgColor</item>
+<!--        &lt;!&ndash; 启动画面在关闭之前显示的时长。最长时间为 1000 毫秒。 &ndash;&gt;-->
+<!--        <item name="android:windowSplashScreenAnimationDuration">1000</item>-->
     </style>
 </resources>

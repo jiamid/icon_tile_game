@@ -59,7 +59,7 @@ flutter:
   fonts:
     - family: Baloo2
       fonts:
-        - asset: assets/fonts/Baloo2-Regular.ttf
+#        - asset: assets/fonts/Baloo2-Regular.ttf
 #        - asset: assets/fonts/Baloo2-Bold.ttf
 #          weight: 700
         - asset: assets/fonts/Baloo2-ExtraBold.ttf
