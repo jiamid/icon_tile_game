@@ -49,17 +49,30 @@ class GameOverPageState extends State<GameOverPage> {
                             : AppLocalizations.of(context)!.gameFailMsg,
                         fontSize: 54,
                       )),
-                  SizedBox(
-                    height: 120,
-                    child: Center(
-                      child: Padding(
-                          padding: const EdgeInsets.all(22),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(44, 0, 44, 0),
+                    child: SizedBox(
+                      height: 120,
+                      child: Center(
                           child: KeyRedButton(
-                            data: AppLocalizations.of(context)!.replay,
-                            onTap: () {
-                              GlobalPageRouter.replace(Pages.gameRoom, context);
-                            },
-                          )),
+                        data: AppLocalizations.of(context)!.home,
+                        onTap: () {
+                          GlobalPageRouter.replace(Pages.home, context);
+                        },
+                      )),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(44, 0, 44, 0),
+                    child: SizedBox(
+                      height: 120,
+                      child: Center(
+                          child: KeyRedButton(
+                        data: AppLocalizations.of(context)!.replay,
+                        onTap: () {
+                          GlobalPageRouter.replace(Pages.gameRoom, context);
+                        },
+                      )),
                     ),
                   ),
                 ],

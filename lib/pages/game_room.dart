@@ -10,6 +10,7 @@ import '../custom_widget/box_animation.dart' show runFlyBoxAnimate;
 import 'game_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../commons/ui_config.dart';
+import 'package:lottie/lottie.dart';
 
 class GameRoomPage extends StatefulWidget {
   const GameRoomPage({super.key});
@@ -18,11 +19,26 @@ class GameRoomPage extends StatefulWidget {
   GameRoomPageState createState() => GameRoomPageState();
 }
 
-class GameRoomPageState extends State<GameRoomPage> {
+class GameRoomPageState extends State<GameRoomPage>
+    with TickerProviderStateMixin {
+  late List<AnimationController> boxAnimatedContainerList;
+
   @override
   void initState() {
     super.initState();
+    boxAnimatedContainerList = List.generate(
+        7,
+        (index) => AnimationController(
+            vsync: this, duration: const Duration(milliseconds: 450)));
     initMap();
+  }
+
+  @override
+  void dispose() {
+    for (var element in boxAnimatedContainerList) {
+      element.dispose();
+    }
+    super.dispose();
   }
 
   List<GlobalKey> boxKeyList = [
@@ -58,7 +74,7 @@ class GameRoomPageState extends State<GameRoomPage> {
     return list.removeAt(randomIndex);
   }
 
-  int nowLevel = 1;
+  int nowLevel = 8;
   int mapMaxWidth = 3;
   List<List<List<int>>> gameMap = [];
 
@@ -217,6 +233,9 @@ class GameRoomPageState extends State<GameRoomPage> {
       temp[thisType] = nums;
       if (nums.length >= 3) {
         for (int i = 0; i < 3; i++) {
+          // runBoo(nums[i]);
+          boxAnimatedContainerList[nums[i]].reset();
+          boxAnimatedContainerList[nums[i]].forward();
           myBox.removeAt(nums[i]);
           HapticFeedback.mediumImpact();
           historyList.clear();
@@ -315,9 +334,7 @@ class GameRoomPageState extends State<GameRoomPage> {
                     setState(() {});
                     chickBox();
                   }, borderColor: borderColor);
-                } catch (e) {
-                  print('error:$e');
-                }
+                } catch (e) {}
               },
               child: Container(
                 width: width - 1,
@@ -420,11 +437,6 @@ class GameRoomPageState extends State<GameRoomPage> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   buildBackBar() {
@@ -552,6 +564,15 @@ class GameRoomPageState extends State<GameRoomPage> {
         ),
       );
       boxItems.add(one);
+      var two = Positioned(
+          top: 2,
+          left: oneBarWidth * index - 2,
+          child: Lottie.asset('assets/lottie/line.json',
+              controller: boxAnimatedContainerList[index],
+              width: oneBarWidth + 4,
+              height: oneBarWidth + 4,
+              fit: BoxFit.contain));
+      boxItems.add(two);
     }
 
     return Stack(children: boxItems);
