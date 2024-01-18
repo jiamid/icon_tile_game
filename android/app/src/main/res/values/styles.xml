@@ -7,7 +7,7 @@
         <item name="android:windowBackground">@drawable/launch_background</item>
 
 <!--        &lt;!&ndash; 启动画面中间显示的图标，默认使用应用图标 &ndash;&gt;-->
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/icon</item>
+<!--        <item name="android:windowSplashScreenAnimatedIcon">@drawable/icon</item>-->
 <!--        &lt;!&ndash; 启动画面底部的图片。 &ndash;&gt;-->
 <!--        <item name="android:windowSplashScreenBrandingImage">@drawable/launch_background</item>-->
 <!--        &lt;!&ndash; 启动画面背景色。 &ndash;&gt;-->
