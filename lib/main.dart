@@ -93,7 +93,7 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       key: GlobalManager().globalKey,
       initialRoute: '/',
-      home:  const FakeLoadingPage(duration: Duration(milliseconds: 500),nextPage: HomePage,),
+      home:  const FakeLoadingPage(duration: Duration(seconds: 5),nextPage: HomePage,),
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class LoadingBox extends StatelessWidget {
   const LoadingBox(
@@ -67,15 +68,36 @@ class LoadingBox extends StatelessWidget {
             ),
           ),
         ),
+
+        // 绿色机器人
+        // Positioned(
+        //   top: -halfHeight,
+        //   left: nowBarWidth - halfHeight,
+        //   child: Lottie.asset('assets/lottie/bot_run.json',
+        //       width: trueHeight * 2,
+        //       height: trueHeight * 2,
+        //       fit: BoxFit.contain),
+        // ),
+
+        // 红色丸子
+        // Positioned(
+        //   left: nowBarWidth,
+        //   child: Lottie.asset('assets/lottie/red_ball_run.json',
+        //       width: trueHeight,
+        //       height: trueHeight,
+        //       fit: BoxFit.contain),
+
+        // 橘猫
         Positioned(
-          left: nowBarWidth,
-          child: Transform.rotate(
-            angle: nowRate * (3.14) * 2,
-            child: Image.asset(
-              'assets/image/loading_flag.webp',
-              width: trueHeight,
-              height: trueHeight,
-            ),
+          top: -offsetHeight,
+          left: nowBarWidth - offsetHeight,
+          child: Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.identity()..scale(-1.0, 1.0, 1.0),
+            child: Lottie.asset('assets/lottie/cat_run.json',
+                width: trueHeight * 1.5,
+                height: trueHeight * 1.5,
+                fit: BoxFit.contain),
           ),
         )
       ],
