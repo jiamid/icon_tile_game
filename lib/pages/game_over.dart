@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../custom_widget/background_box.dart';
+import '../custom_widget/image_icon_button.dart';
 import '../custom_widget/key_red_button.dart';
 import '../custom_widget/key_zoo_board.dart';
 import '../router/router_manager.dart';
@@ -42,24 +43,30 @@ class GameOverPageState extends State<GameOverPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                      height: 220,
-                      child: KeyZooBoard(
-                        data: widget.gameStatus
-                            ? AppLocalizations.of(context)!.gameSuccessMsg
-                            : AppLocalizations.of(context)!.gameFailMsg,
-                        fontSize: 54,
-                      )),
+                    height: 240,
+                    child: widget.gameStatus
+                        ? KeyZooBoard(
+                            data: widget.gameStatus
+                                ? AppLocalizations.of(context)!.gameSuccessMsg
+                                : AppLocalizations.of(context)!.gameFailMsg,
+                            fontSize: 54,
+                          )
+                        : Image.asset('assets/image/img_game_fail.webp'),
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(44, 0, 44, 0),
                     child: SizedBox(
                       height: 120,
                       child: Center(
-                          child: KeyRedButton(
-                        data: AppLocalizations.of(context)!.home,
-                        onTap: () {
-                          GlobalPageRouter.replace(Pages.home, context);
-                        },
-                      )),
+                        child: buildImageButton(
+                          'assets/image/btn_home.webp',
+                          onTap: () {
+                            GlobalPageRouter.replace(Pages.home, context);
+                          },
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
@@ -67,11 +74,13 @@ class GameOverPageState extends State<GameOverPage> {
                     child: SizedBox(
                       height: 120,
                       child: Center(
-                          child: KeyRedButton(
-                        data: AppLocalizations.of(context)!.replay,
+                          child: buildImageButton(
+                        'assets/image/btn_replay.webp',
                         onTap: () {
                           GlobalPageRouter.replace(Pages.gameRoom, context);
                         },
+                        width: double.infinity,
+                        height: double.infinity,
                       )),
                     ),
                   ),

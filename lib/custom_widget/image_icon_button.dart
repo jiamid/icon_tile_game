@@ -65,13 +65,17 @@ class ImageIconButton extends StatelessWidget {
   }
 }
 
-buildImageButton(imgPath, onPressed, {times, double size = 60}) {
+buildImageButton(String imgPath,
+    {GestureTapCallback? onTap,
+    int? times,
+    double width = 60,
+    double height = 60}) {
   List<Widget> stackChildren = [
     SizedBox(
-        height: size,
-        width: size,
+        height: width,
+        width: height,
         child: GestureDetector(
-          onTap: onPressed,
+          onTap: onTap,
           child: Image.asset(imgPath),
         )),
   ];
@@ -87,7 +91,7 @@ buildImageButton(imgPath, onPressed, {times, double size = 60}) {
             color: Colors.red,
           ),
           child: Text(
-            times,
+            times.toString(),
             style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,

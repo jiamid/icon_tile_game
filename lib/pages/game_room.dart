@@ -74,7 +74,7 @@ class GameRoomPageState extends State<GameRoomPage>
     return list.removeAt(randomIndex);
   }
 
-  int nowLevel = 1;
+  int nowLevel = 9;
   int mapMaxWidth = 3;
   List<List<List<int>>> gameMap = [];
 
@@ -442,7 +442,7 @@ class GameRoomPageState extends State<GameRoomPage>
     return SizedBox(
       height: 25,
       child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-        buildImageButton('assets/image/icon_go_back.webp', () {
+        buildImageButton('assets/image/icon_go_back.webp', onTap: () {
           GlobalPageRouter.replace(Pages.home, context);
         }),
       ]),
