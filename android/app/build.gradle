@@ -22,10 +22,6 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-//声明 获取签名配置 配置文件路径
-def signProperties = rootProject.file("sign/keystore.properties")
-def props = new Properties()
-props.load(new FileInputStream(signProperties))
 
 android {
     namespace "com.example.icon_tile_game"
@@ -55,26 +51,17 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-    signingConfigs {
-        release {
-            keyAlias props['keyAlias']
-            keyPassword props['keyPassword']
-            storeFile rootProject.file("sign/jiamid.keystore")
-            storePassword props['storePassword']
-        }
-    }
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            // signingConfig signingConfigs.debug
+            //使用签名文件
+             signingConfig signingConfigs.debug
             //混淆
             minifyEnabled true
             //去除无用res文件
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            //使用签名文件
-            signingConfig null
             debuggable false
         }
     }
