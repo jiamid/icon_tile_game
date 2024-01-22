@@ -4,13 +4,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:icon_tile_game/custom_widget/background_box.dart';
 import '../custom_widget/image_icon_button.dart';
-import '../custom_widget/typing_text.dart';
 import '../router/router_manager.dart';
 import '../custom_widget/box_animation.dart' show runFlyBoxAnimate;
 import 'game_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../commons/ui_config.dart';
 import 'package:lottie/lottie.dart';
+import 'package:decimal/decimal.dart';
 
 class GameRoomPage extends StatefulWidget {
   const GameRoomPage({super.key});
@@ -74,12 +74,62 @@ class GameRoomPageState extends State<GameRoomPage>
     return list.removeAt(randomIndex);
   }
 
-  int nowLevel = 1;
+  int nowLevel = 5;
   int mapMaxWidth = 3;
   List<List<List<int>>> gameMap = [];
 
   List<int> floorDiffY = [1, 2, 3, 4, 5, 6, 7, 7, 7];
   List<int> floorDiffX = [1, 2, 3, 4, 5, 6, 7, 7, 7];
+  Map<String, bool> lastFloorSet = {};
+  List lastFloorList = [];
+
+  checkLastFloor() {
+    lastFloorList = [];
+    for (int floor = 0; floor < gameMap.length; floor++) {
+      var oneFloor = gameMap[floor];
+      for (int y = 0; y < oneFloor.length; y++) {
+        for (int x = 0; x < oneFloor[y].length; x++) {
+          int boxType = oneFloor[y][x];
+          if (boxType != 0 && boxType != -1) {
+            Decimal w =
+                Decimal.parse(oneBoxWidth.toString()) - Decimal.fromInt(8);
+            Decimal top = (w + Decimal.fromInt(4)) * Decimal.fromInt(y) +
+                Decimal.fromInt(floorDiffY[floor]);
+            Decimal left = (w + Decimal.fromInt(4)) * Decimal.fromInt(x) +
+                Decimal.fromInt(floorDiffX[floor]);
+            var needDel = [];
+            for (int index = 0; index < lastFloorList.length; index++) {
+              var tempOne = lastFloorList[index];
+              var tempLeft = tempOne['left'];
+              var tempTop = tempOne['top'];
+              var diffX = (left - tempLeft).abs();
+              var diffY = (top - tempTop).abs();
+              if ((diffX < w) && (diffY < w)) {
+                needDel.add(index);
+              }
+            }
+            for (int one = needDel.length - 1; one >= 0; one--) {
+              lastFloorList.removeAt(needDel[one]);
+            }
+            lastFloorList.add({
+              'left': left,
+              'top': top,
+              'f': floor,
+              'x': x,
+              'y': y,
+            });
+          }
+        }
+      }
+    }
+    Map<String, bool> thisLastFloorSet = {};
+    for (var one in lastFloorList) {
+      thisLastFloorSet['${one["f"]}_${one["x"]}_${one["y"]}'] = true;
+    }
+    setState(() {
+      lastFloorSet = thisLastFloorSet;
+    });
+  }
 
   initMap() {
     myBox = [];
@@ -101,6 +151,8 @@ class GameRoomPageState extends State<GameRoomPage>
       }
     }
     setState(() {});
+
+    checkLastFloor();
   }
 
   int refreshTimes = 3;
@@ -208,6 +260,7 @@ class GameRoomPageState extends State<GameRoomPage>
         'endOffset': end
       });
     });
+    checkLastFloor();
     return end;
   }
 
@@ -303,7 +356,7 @@ class GameRoomPageState extends State<GameRoomPage>
     return Color.fromARGB(color.alpha, red, green, blue);
   }
 
-  buildOneBox(int boxType, f, x, y, width, top, left) {
+  buildOneBox(int boxType, f, x, y, width, isLast) {
     width = width - 8;
     Color bgColor = lightenColor(boxColorMap[boxType], 0.95);
     Color borderColor = darkenColor(boxColorMap[boxType], 0.1);
@@ -326,7 +379,6 @@ class GameRoomPageState extends State<GameRoomPage>
                   if (endOffset == null) {
                     return;
                   }
-
                   runFlyBoxAnimate(c, startOffset, endOffset, bgColor, width,
                       oneBarWidth - 10, 'assets/box/$boxType.webp', () {
                     thisBox['status'] = 1;
@@ -341,18 +393,32 @@ class GameRoomPageState extends State<GameRoomPage>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(boxRadius),
                   border: Border.all(
-                    color: borderColor, // 边框颜色
+                    color: isLast
+                        ? borderColor
+                        : borderColor.withOpacity(0.9), // 边框颜色
                     width: 2, // 边框宽度
                   ),
+                  image: DecorationImage(
+                      image: AssetImage('assets/box/$boxType.webp'),
+                      fit: BoxFit.contain),
                   color: bgColor,
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(boxRadius - 2),
-                  child: Image.asset(
-                    'assets/box/$boxType.webp',
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                child: isLast
+                    ? null
+                    : Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(boxRadius - 2),
+                          color: Colors.black54,
+                        ),
+                      ),
+
+                // child: ClipRRect(
+                //   borderRadius: BorderRadius.circular(boxRadius - 2),
+                //   child: Image.asset(
+                //     'assets/box/$boxType.webp',
+                //     fit: BoxFit.cover,
+                //   ),
+                // ),
               ),
             ));
       },
@@ -361,13 +427,14 @@ class GameRoomPageState extends State<GameRoomPage>
 
   List<Widget> stackChildrenList = [];
 
+  double oneBoxWidth = 48.57;
+
   buildMap() {
     var width = MediaQuery.of(context).size.width - 20;
     var oneWidth = width / mapMaxWidth;
-
+    oneBoxWidth = oneWidth;
     var boxWidth = width + 4;
     var boxHeight = width + 4 + 20;
-
     var base = Container(
       height: boxHeight,
       width: boxWidth,
@@ -391,8 +458,9 @@ class GameRoomPageState extends State<GameRoomPage>
           if (boxType != 0 && boxType != -1) {
             var top = oneWidth * y + floorDiffY[floor];
             var left = oneWidth * x + floorDiffX[floor];
+            var isLast = lastFloorSet['${floor}_${x}_$y'] ?? false;
             var one = Positioned(
-                child: buildOneBox(boxType, floor, x, y, oneWidth, top, left),
+                child: buildOneBox(boxType, floor, x, y, oneWidth, isLast),
                 top: top + 8,
                 left: left + 2);
             allFloor.add(one);
