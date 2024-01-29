@@ -80,55 +80,49 @@ class GameRoomPageState extends State<GameRoomPage>
 
   List<int> floorDiffY = [1, 2, 3, 4, 5, 6, 7, 7, 7];
   List<int> floorDiffX = [1, 2, 3, 4, 5, 6, 7, 7, 7];
-  Map<String, bool> lastFloorSet = {};
-  List lastFloorList = [];
+
+  Map<String, Map> lastFloorMap = {};
+
 
   checkLastFloor() {
-    lastFloorList = [];
+    lastFloorMap = {};
     for (int floor = 0; floor < gameMap.length; floor++) {
       var oneFloor = gameMap[floor];
       for (int y = 0; y < oneFloor.length; y++) {
         for (int x = 0; x < oneFloor[y].length; x++) {
           int boxType = oneFloor[y][x];
           if (boxType != 0 && boxType != -1) {
+            String thisKey = '${floor}_${x}_$y';
+
             Decimal w =
-                Decimal.parse(oneBoxWidth.toString()) - Decimal.fromInt(8);
+                Decimal.parse('48') - Decimal.fromInt(8);
             Decimal top = (w + Decimal.fromInt(4)) * Decimal.fromInt(y) +
                 Decimal.fromInt(floorDiffY[floor]);
             Decimal left = (w + Decimal.fromInt(4)) * Decimal.fromInt(x) +
                 Decimal.fromInt(floorDiffX[floor]);
-            var needDel = [];
-            for (int index = 0; index < lastFloorList.length; index++) {
-              var tempOne = lastFloorList[index];
+
+            for (var key in lastFloorMap.keys.toList()) {
+              var tempOne = lastFloorMap[key]!;
               var tempLeft = tempOne['left'];
               var tempTop = tempOne['top'];
               var diffX = (left - tempLeft).abs();
               var diffY = (top - tempTop).abs();
               if ((diffX < w) && (diffY < w)) {
-                needDel.add(index);
+                lastFloorMap.remove(key);
               }
             }
-            for (int one = needDel.length - 1; one >= 0; one--) {
-              lastFloorList.removeAt(needDel[one]);
-            }
-            lastFloorList.add({
+            lastFloorMap[thisKey] = {
               'left': left,
               'top': top,
               'f': floor,
               'x': x,
               'y': y,
-            });
+            };
           }
         }
       }
     }
-    Map<String, bool> thisLastFloorSet = {};
-    for (var one in lastFloorList) {
-      thisLastFloorSet['${one["f"]}_${one["x"]}_${one["y"]}'] = true;
-    }
-    setState(() {
-      lastFloorSet = thisLastFloorSet;
-    });
+    setState(() {});
   }
 
   initMap() {
@@ -458,7 +452,7 @@ class GameRoomPageState extends State<GameRoomPage>
           if (boxType != 0 && boxType != -1) {
             var top = oneWidth * y + floorDiffY[floor];
             var left = oneWidth * x + floorDiffX[floor];
-            var isLast = lastFloorSet['${floor}_${x}_$y'] ?? false;
+            var isLast = lastFloorMap.containsKey('${floor}_${x}_$y');
             var one = Positioned(
                 child: buildOneBox(boxType, floor, x, y, oneWidth, isLast),
                 top: top + 8,
