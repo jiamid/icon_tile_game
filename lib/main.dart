@@ -31,18 +31,17 @@ class MyAppState extends State<MyApp> {
 
   toggleLang() async {
     if (nowLocale.languageCode == 'en') {
-      await StorageManager().setString(StorageManager.KEY_LANGUAGE, 'zh');
+      await StorageManager().setValue(StorageKey.language, 'zh');
       setLocate(const Locale('zh'));
     } else {
-      await StorageManager().setString(StorageManager.KEY_LANGUAGE, 'en');
+      await StorageManager().setValue(StorageKey.language, 'en');
       setLocate(const Locale('en'));
     }
   }
 
   initLocate() async {
     String lang = await StorageManager()
-        .getString(StorageManager.KEY_LANGUAGE, defValue: 'en');
-    print('object:$lang');
+        .getValue(StorageKey.language);
     // lang = 'zh';
     setState(() {
       nowLocale = Locale(lang);

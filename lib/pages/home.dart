@@ -8,6 +8,7 @@ import '../custom_widget/typing_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../commons/ui_config.dart';
 import '../main.dart';
+import '../custom_widget/gold_num_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -44,12 +45,11 @@ class HomePageState extends State<HomePage> {
         child: SafeArea(
           child: Column(
             children: [
-              Container(
-                alignment: AlignmentDirectional.centerEnd,
+              // child: buildImageButton('assets/image/loading_flag.webp',
+              //     onTap: toggleLang)
+              SizedBox(
                 height: 40,
-                // child: buildImageButton('assets/image/loading_flag.webp', () {
-                //   toggleLang();
-                // }, AppLocalizations.of(context)!.langCode, 40),
+                child:  GoldNumButton(height: 40.0),
               ),
               Expanded(
                   child: Column(

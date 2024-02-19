@@ -110,3 +110,36 @@ buildImageButton(String imgPath,
   }
   return Stack(children: stackChildren);
 }
+
+buildGoldButton(String imgPath, int gold,
+    {GestureTapCallback? onTap, double height = 40}) {
+  List<Widget> stackChildren = [
+    SizedBox(
+      height: height,
+      width: double.infinity,
+      child: Image.asset(
+        imgPath,
+        fit: BoxFit.contain,
+        alignment: Alignment.centerLeft,
+      ),
+    ),
+  ];
+  stackChildren.add(Positioned(
+    left: height,
+    child: Text(
+      gold.toString(),
+      style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w900,
+          fontSize: height / 2,
+          height: 2,
+          fontFamily: 'Baloo2',
+          shadows: const [
+            Shadow(
+                color: Color(0xFFB45509), blurRadius: 0, offset: Offset(0, 2))
+          ],
+          decoration: TextDecoration.none),
+    ),
+  ));
+  return GestureDetector(onTap: onTap, child: Stack(children: stackChildren));
+}
