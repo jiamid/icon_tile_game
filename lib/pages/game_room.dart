@@ -1,14 +1,19 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:icon_tile_game/custom_widget/background_box.dart';
+import '../custom_widget/confirm_alert_dialog.dart';
+import '../custom_widget/gold_num_button.dart';
 import '../custom_widget/image_icon_button.dart';
 import '../router/router_manager.dart';
 import '../custom_widget/box_animation.dart' show runFlyBoxAnimate;
 import 'game_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../commons/ui_config.dart';
+import '../commons/notifier_manager.dart';
+import '../commons/gold_manager.dart';
 import 'package:lottie/lottie.dart';
 import 'package:decimal/decimal.dart';
 
@@ -22,6 +27,7 @@ class GameRoomPage extends StatefulWidget {
 class GameRoomPageState extends State<GameRoomPage>
     with TickerProviderStateMixin {
   late List<AnimationController> boxAnimatedContainerList;
+  late StreamSubscription _subscription;
 
   @override
   void initState() {
@@ -31,10 +37,25 @@ class GameRoomPageState extends State<GameRoomPage>
         (index) => AnimationController(
             vsync: this, duration: const Duration(milliseconds: 300)));
     initMap();
+    _subscription = Notifier().stream.listen((notifierData) {
+      if (notifierData.noticeType == NoticeType.randomGameMap) {
+        refreshTimes += 1;
+        refreshMap();
+      }
+      if (notifierData.noticeType == NoticeType.resetNowLevel) {
+        resetTimes += 1;
+        resetLevel();
+      }
+      if (notifierData.noticeType == NoticeType.goBackStep) {
+        goBackTimes += 1;
+        goBack();
+      }
+    });
   }
 
   @override
   void dispose() {
+    _subscription.cancel();
     for (var element in boxAnimatedContainerList) {
       element.dispose();
     }
@@ -74,7 +95,7 @@ class GameRoomPageState extends State<GameRoomPage>
     return list.removeAt(randomIndex);
   }
 
-  int nowLevel = 1;
+  int nowLevel = 3;
   int mapMaxWidth = 3;
   List<List<List<int>>> gameMap = [];
 
@@ -82,7 +103,6 @@ class GameRoomPageState extends State<GameRoomPage>
   List<int> floorDiffX = [1, 2, 3, 4, 5, 6, 7, 7, 7];
 
   Map<String, Map> lastFloorMap = {};
-
 
   checkLastFloor() {
     lastFloorMap = {};
@@ -94,8 +114,7 @@ class GameRoomPageState extends State<GameRoomPage>
           if (boxType != 0 && boxType != -1) {
             String thisKey = '${floor}_${x}_$y';
 
-            Decimal w =
-                Decimal.parse('48') - Decimal.fromInt(8);
+            Decimal w = Decimal.parse('48') - Decimal.fromInt(8);
             Decimal top = (w + Decimal.fromInt(4)) * Decimal.fromInt(y) +
                 Decimal.fromInt(floorDiffY[floor]);
             Decimal left = (w + Decimal.fromInt(4)) * Decimal.fromInt(x) +
@@ -127,8 +146,8 @@ class GameRoomPageState extends State<GameRoomPage>
 
   initMap() {
     myBox = [];
-    goBackTimes = 3;
-    refreshTimes = 3;
+    // goBackTimes = 3;
+    // refreshTimes = 3;
     gameMap = (levelMap[nowLevel] ?? levelMap[1]!);
     floorDiffX = (levelOffsetMap[nowLevel]?[0] ?? levelOffsetMap[1]?[0])!;
     floorDiffY = (levelOffsetMap[nowLevel]?[1] ?? levelOffsetMap[1]?[1])!;
@@ -155,8 +174,31 @@ class GameRoomPageState extends State<GameRoomPage>
   List<Map> historyList = [];
   bool goBackStatus = false; // 用来防止关卡重置时快速点击返回导致问题
 
+  /// 确定使用金币购买道具
+  confirmUseGoods(GoodsType goodsType) async {
+    int price = goodsPriceMap[goodsType]!;
+    String? tips = goodsTipMap[goodsType];
+    ConfirmAlertDialog.show(
+        context: context,
+        price: price,
+        tips: tips ?? 'Cost $price to buy it?',
+        confirmCallback: () async {
+          bool status =
+              await GoldManager().testReduce(ReduceData(goodsType: goodsType));
+          if (status) {
+            GoldManager().handleReduce(ReduceData(goodsType: goodsType));
+          } else {
+            GlobalPageRouter.go(Pages.shopPage, context);
+          }
+        });
+  }
+
   goBack() {
-    if (goBackTimes <= 0 || historyList.isEmpty) {
+    if (historyList.isEmpty) {
+      return;
+    }
+    if (goBackTimes <= 0) {
+      confirmUseGoods(GoodsType.goBackStep);
       return;
     }
     var lastOne = historyList[historyList.length - 1];
@@ -177,6 +219,7 @@ class GameRoomPageState extends State<GameRoomPage>
       if (goBackStatus) {
         gameMap[lastOne['f']][lastOne['y']][lastOne['x']] = lastOne['type'];
       }
+      checkLastFloor();
       setState(() {});
     }, borderColor: borderColor);
     goBackTimes -= 1;
@@ -185,6 +228,7 @@ class GameRoomPageState extends State<GameRoomPage>
 
   resetLevel() {
     if (resetTimes <= 0) {
+      confirmUseGoods(GoodsType.resetNowLevel);
       return;
     }
     historyList.clear();
@@ -195,6 +239,7 @@ class GameRoomPageState extends State<GameRoomPage>
 
   refreshMap() {
     if (refreshTimes <= 0) {
+      confirmUseGoods(GoodsType.randomGameMap);
       return;
     }
     refreshTimes -= 1;
@@ -392,27 +437,36 @@ class GameRoomPageState extends State<GameRoomPage>
                         : borderColor.withOpacity(0.9), // 边框颜色
                     width: 2, // 边框宽度
                   ),
-                  image: DecorationImage(
-                      image: AssetImage('assets/box/$boxType.webp'),
-                      fit: BoxFit.contain),
+                  // image: DecorationImage(
+                  //     image: AssetImage('assets/box/$boxType.webp'),
+                  //     fit: BoxFit.contain),
                   color: bgColor,
                 ),
-                child: isLast
-                    ? null
-                    : Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(boxRadius - 2),
-                          color: Colors.black54,
-                        ),
-                      ),
+                // child: isLast
+                //     ? null
+                //     : Container(
+                //         decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(boxRadius - 2),
+                //           color: Colors.black54,
+                //         ),
+                //       ),
 
-                // child: ClipRRect(
-                //   borderRadius: BorderRadius.circular(boxRadius - 2),
-                //   child: Image.asset(
-                //     'assets/box/$boxType.webp',
-                //     fit: BoxFit.cover,
-                //   ),
-                // ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    // borderRadius: BorderRadius.circular(boxRadius),
+                    image: DecorationImage(
+                        image: AssetImage('assets/box/$boxType.webp'),
+                        fit: BoxFit.contain),
+                  ),
+                  child: isLast
+                      ? null
+                      : Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(boxRadius - 2),
+                            color: Colors.black54,
+                          ),
+                        ),
+                ),
               ),
             ));
       },
@@ -483,16 +537,30 @@ class GameRoomPageState extends State<GameRoomPage>
         child: SafeArea(
           bottom: false,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildBackBar(),
-              buildHeader(),
-              buildMap(),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: 40,
+                width: double.infinity,
+                child: GoldNumButton(
+                    height: 40.0,
+                    onTap: () {
+                      GlobalPageRouter.go(Pages.shopPage, context);
+                    }),
               ),
-              buildChooseBox(),
-              buildPropBox()
+              Expanded(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                    buildBackBar(),
+                    buildHeader(),
+                    buildMap(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    buildChooseBox(),
+                    buildPropBox()
+                  ]))
             ],
           ),
         ),

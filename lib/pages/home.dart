@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:icon_tile_game/commons/global_manager.dart';
 import 'package:icon_tile_game/custom_widget/key_red_button.dart';
 import '../custom_widget/background_box.dart';
+import '../custom_widget/image_icon_button.dart';
 import '../custom_widget/key_zoo_board.dart';
 import '../router/router_manager.dart';
 import '../custom_widget/typing_text.dart';
@@ -45,11 +46,31 @@ class HomePageState extends State<HomePage> {
         child: SafeArea(
           child: Column(
             children: [
-              // child: buildImageButton('assets/image/loading_flag.webp',
-              //     onTap: toggleLang)
+              // buildImageButton('assets/image/loading_flag.webp',
+              //     onTap: toggleLang),
               SizedBox(
                 height: 40,
-                child:  GoldNumButton(height: 40.0),
+                child: Padding(
+                    // padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: Row(children: [
+                      Expanded(
+                          child: GoldNumButton(
+                        height: 40.0,
+                        onTap: () {
+                          GlobalPageRouter.go(Pages.shopPage, context);
+                        },
+                      )),
+                      IconButton(
+                          onPressed: () {
+                            print('hello');
+                          },
+                          icon: const Icon(
+                            Icons.settings_outlined,
+                            size: 30,
+                            color: Colors.orangeAccent,
+                          )),
+                    ])),
               ),
               Expanded(
                   child: Column(
