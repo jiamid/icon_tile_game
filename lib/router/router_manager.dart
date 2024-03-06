@@ -5,10 +5,12 @@ import '../pages/game_room.dart';
 import '../pages/game_over.dart';
 import '../custom_widget/loading_page.dart';
 import '../pages/shop_page.dart';
+import '../pages/about_page.dart';
 import '../pages/transaction_records_page.dart';
 
 class Pages {
   static const home = HomePage;
+  static const aboutPage = AboutPage;
   static const gameRoom = GameRoomPage;
   static const gameOver = GameOverPage;
   static const fakeLoadingPage = FakeLoadingPage;
@@ -18,6 +20,7 @@ class Pages {
 
 /// 构造方法
 Map<Type, Function> globalPageMap = {
+  AboutPage: (context, {arguments}) => const AboutPage(),
   GameRoomPage: (context, {arguments}) => const GameRoomPage(),
   TransactionRecordsPage: (context, {arguments}) =>
       const TransactionRecordsPage(),

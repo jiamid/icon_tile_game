@@ -63,7 +63,7 @@ class HomePageState extends State<HomePage> {
                       )),
                       IconButton(
                           onPressed: () {
-                            print('hello');
+                            GlobalPageRouter.go(Pages.aboutPage, context);
                           },
                           icon: const Icon(
                             Icons.settings_outlined,

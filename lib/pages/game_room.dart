@@ -95,7 +95,7 @@ class GameRoomPageState extends State<GameRoomPage>
     return list.removeAt(randomIndex);
   }
 
-  int nowLevel = 3;
+  int nowLevel = 6;
   int mapMaxWidth = 3;
   List<List<List<int>>> gameMap = [];
 
