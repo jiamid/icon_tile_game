@@ -5,6 +5,7 @@ import 'pages/home.dart';
 import 'commons/storage_manager.dart';
 import 'commons/global_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,8 +41,7 @@ class MyAppState extends State<MyApp> {
   }
 
   initLocate() async {
-    String lang = await StorageManager()
-        .getValue(StorageKey.language);
+    String lang = await StorageManager().getValue(StorageKey.language);
     // lang = 'zh';
     setState(() {
       nowLocale = Locale(lang);
@@ -75,8 +75,6 @@ class MyAppState extends State<MyApp> {
     // appBarTheme: AppBarTheme(backgroundColor: JiaColors.backgroundColor),
   );
 
-
-
   // Pages.fakeLoadingPage, context,
   // arguments: {
   // 'duration': const Duration(milliseconds: 500),
@@ -92,12 +90,16 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       key: GlobalManager().globalKey,
       initialRoute: '/',
-      home:  const FakeLoadingPage(duration: Duration(seconds: 1),nextPage: HomePage,),
+      home: const FakeLoadingPage(
+        duration: Duration(seconds: 1),
+        nextPage: HomePage,
+      ),
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: nowLocale,
+      builder: EasyLoading.init(),
     );
   }
 }

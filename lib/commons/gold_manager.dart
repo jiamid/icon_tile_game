@@ -8,9 +8,9 @@ import 'db_manager.dart';
 enum GoodsType { cash, gold, randomGameMap, goBackStep, resetNowLevel }
 
 Map<GoodsType, int> goodsPriceMap = {
-  GoodsType.randomGameMap: 10,
-  GoodsType.goBackStep: 10,
-  GoodsType.resetNowLevel: 10,
+  GoodsType.randomGameMap: 30,
+  GoodsType.goBackStep: 30,
+  GoodsType.resetNowLevel: 30,
 };
 
 Map<GoodsType, String> goodsTipMap = {
@@ -33,7 +33,7 @@ logSpeedGold(GoodsType goodsType, int goldNum) async {
     newOne.goodsType = goodsType.index;
     newOne.goodsAmount = 1;
     newOne.spendType = 1;
-    newOne.spendAmount = goldNum;
+    newOne.spendAmount = (-goldNum).toString();
     int newId = await DBManager().addOneTransactionRecord(newOne);
     if (newId != 0) {
       print('log success id:$newId');

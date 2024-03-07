@@ -39,6 +39,10 @@ dependencies:
   lottie: ^2.7.0
   decimal: ^2.3.3
   sqflite: ^2.2.8+4 # 数据库
+  in_app_purchase: ^3.1.13
+  package_info_plus: ^4.0.2
+  url_launcher: ^6.1.12
+  flutter_easyloading: ^3.0.5 #Loading
 
 
   # The following adds the Cupertino Icons font to your application.

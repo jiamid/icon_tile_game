@@ -42,7 +42,7 @@ class TransactionRecordsPageState extends State<TransactionRecordsPage> {
   }
 
   Map iconMap = {
-    0: const Icon(Icons.attach_money_outlined),
+    0: const Icon(Icons.money_outlined),
     1: const Icon(Icons.child_care_outlined),
     2: const Icon(Icons.screen_rotation_alt_outlined),
     3: const Icon(Icons.swipe_left_outlined),
@@ -109,12 +109,7 @@ class TransactionRecordsPageState extends State<TransactionRecordsPage> {
                       Expanded(
                         flex: 4,
                         child: Text(
-                          data[TransactionRecordsTableModel.spendType] == 0
-                              ? (data[TransactionRecordsTableModel
-                                          .spendAmount] /
-                                      100)
-                                  .toString()
-                              : '-${data[TransactionRecordsTableModel.spendAmount]}',
+                          data[TransactionRecordsTableModel.spendAmount],
                           style: const TextStyle(
                             fontFamily: 'Baloo2',
                           ),
@@ -143,6 +138,33 @@ class TransactionRecordsPageState extends State<TransactionRecordsPage> {
         ));
   }
 
+  buildBackBar() {
+    Stack box = Stack(children: [
+      const SizedBox(
+        height: 34,
+        width: double.infinity,
+      ),
+      const SizedBox(
+        width: double.infinity,
+        child: Text(
+          'Transaction Records',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Colors.brown,
+              fontSize: 24,
+              fontFamily: 'Baloo2',
+              fontWeight: FontWeight.w900),
+        ),
+      ),
+      SizedBox(
+          height: 34,
+          child: buildImageButton('assets/image/icon_go_back.webp', onTap: () {
+            GlobalPageRouter.back(context);
+          }))
+    ]);
+    return box;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,23 +173,11 @@ class TransactionRecordsPageState extends State<TransactionRecordsPage> {
         child: SafeArea(
           child: Column(
             children: [
-              SizedBox(
-                height: 40,
-                width: double.infinity,
-                child: GoldNumButton(height: 40.0),
-              ),
+              buildBackBar(),
               Expanded(
                   child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Transaction Records',
-                    style: TextStyle(
-                        color: Colors.brown,
-                        fontSize: 24,
-                        fontFamily: 'Baloo2',
-                        fontWeight: FontWeight.w900),
-                  ),
                   Expanded(
                       child: transactionRecordList.isEmpty
                           ? const Text(

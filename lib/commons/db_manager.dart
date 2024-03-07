@@ -48,9 +48,8 @@ class NewTransactionRecordModel {
   int goodsType = 0;
   int goodsAmount = 0;
   int spendType = 0;
-  int spendAmount = 0;
+  String spendAmount = '0';
 }
-
 
 class NormalCreateTables {
   static final String createTransactionRecordsTable = '''
@@ -60,7 +59,7 @@ class NormalCreateTables {
        ${TransactionRecordsTableModel.goodsType} ${SqlConfig.sqlInt} ${SqlConfig.sqlNoNull} ,
        ${TransactionRecordsTableModel.spendType} ${SqlConfig.sqlInt} ${SqlConfig.sqlNoNull},
        ${TransactionRecordsTableModel.goodsAmount} ${SqlConfig.sqlInt} ${SqlConfig.sqlNoNull},
-       ${TransactionRecordsTableModel.spendAmount} ${SqlConfig.sqlInt} ${SqlConfig.sqlNoNull},
+       ${TransactionRecordsTableModel.spendAmount} ${SqlConfig.sqlText} ${SqlConfig.sqlNoNull},
        ${TransactionRecordsTableModel.createdAt} ${SqlConfig.sqlBigInt} ${SqlConfig.sqlNoNull} DEFAULT 0
        );
        ''';
@@ -107,9 +106,7 @@ class DBManager {
           await db.execute(allTableSqls[sql]!);
         }
       },
-      onCreate: (db, version) async {
-
-      },
+      onCreate: (db, version) async {},
     );
   }
 
@@ -146,8 +143,7 @@ class DBManager {
     }
   }
 
-  Future<int> addOneTransactionRecord(
-      NewTransactionRecordModel newOne) async {
+  Future<int> addOneTransactionRecord(NewTransactionRecordModel newOne) async {
     try {
       int newId = await _database!.insert(SqlConfig.transactionRecordsTable, {
         TransactionRecordsTableModel.title: newOne.title,
@@ -156,7 +152,7 @@ class DBManager {
         TransactionRecordsTableModel.spendType: newOne.spendType,
         TransactionRecordsTableModel.spendAmount: newOne.spendAmount,
         TransactionRecordsTableModel.createdAt:
-        DateTime.now().millisecondsSinceEpoch,
+            DateTime.now().millisecondsSinceEpoch,
       });
       // await delTransactionRecordsOver(limit: 100);
       return newId;

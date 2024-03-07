@@ -16,6 +16,7 @@ import '../commons/notifier_manager.dart';
 import '../commons/gold_manager.dart';
 import 'package:lottie/lottie.dart';
 import 'package:decimal/decimal.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class GameRoomPage extends StatefulWidget {
   const GameRoomPage({super.key});
@@ -103,8 +104,12 @@ class GameRoomPageState extends State<GameRoomPage>
   List<int> floorDiffX = [1, 2, 3, 4, 5, 6, 7, 7, 7];
 
   Map<String, Map> lastFloorMap = {};
+  Set<String> lastFloorSet = {};
 
-  checkLastFloor() {
+  _checkLastFloor() {
+    // 性能比下方的方法要低
+    var start = DateTime.timestamp().millisecondsSinceEpoch;
+    Decimal w = Decimal.parse('48') - Decimal.fromInt(8);
     lastFloorMap = {};
     for (int floor = 0; floor < gameMap.length; floor++) {
       var oneFloor = gameMap[floor];
@@ -113,17 +118,18 @@ class GameRoomPageState extends State<GameRoomPage>
           int boxType = oneFloor[y][x];
           if (boxType != 0 && boxType != -1) {
             String thisKey = '${floor}_${x}_$y';
-
-            Decimal w = Decimal.parse('48') - Decimal.fromInt(8);
             Decimal top = (w + Decimal.fromInt(4)) * Decimal.fromInt(y) +
                 Decimal.fromInt(floorDiffY[floor]);
             Decimal left = (w + Decimal.fromInt(4)) * Decimal.fromInt(x) +
                 Decimal.fromInt(floorDiffX[floor]);
-
             for (var key in lastFloorMap.keys.toList()) {
               var tempOne = lastFloorMap[key]!;
               var tempLeft = tempOne['left'];
               var tempTop = tempOne['top'];
+              var tempFloor = tempOne['f'];
+              if (tempFloor == floor) {
+                continue;
+              }
               var diffX = (left - tempLeft).abs();
               var diffY = (top - tempTop).abs();
               if ((diffX < w) && (diffY < w)) {
@@ -141,6 +147,63 @@ class GameRoomPageState extends State<GameRoomPage>
         }
       }
     }
+    var end = DateTime.timestamp().millisecondsSinceEpoch;
+    print('use diff ${end - start}');
+    setState(() {});
+  }
+
+  checkLastFloor() {
+    var start = DateTime.timestamp().millisecondsSinceEpoch;
+    lastFloorMap = {};
+    Decimal w = Decimal.parse('48') - Decimal.fromInt(8);
+    for (int floor = 0; floor < gameMap.length; floor++) {
+      var oneFloor = gameMap[floor];
+      for (int y = 0; y < oneFloor.length; y++) {
+        for (int x = 0; x < oneFloor[y].length; x++) {
+          int boxType = oneFloor[y][x];
+          if (boxType != 0 && boxType != -1) {
+            String thisKey = '${floor}_${x}_$y';
+            Decimal top = (w + Decimal.fromInt(4)) * Decimal.fromInt(y) +
+                Decimal.fromInt(floorDiffY[floor]);
+            Decimal left = (w + Decimal.fromInt(4)) * Decimal.fromInt(x) +
+                Decimal.fromInt(floorDiffX[floor]);
+            lastFloorMap[thisKey] = {
+              'left': left,
+              'top': top,
+              'f': floor,
+              'x': x,
+              'y': y,
+            };
+          }
+        }
+      }
+    }
+    List<String> keys = lastFloorMap.keys.toList();
+    for (var i = 0; i < keys.length; i++) {
+      String oneKey = keys[i];
+      var tempOne = lastFloorMap[oneKey]!;
+      var tempLeft = tempOne['left'];
+      var tempTop = tempOne['top'];
+      var oneFloor = tempOne['f'];
+      for (var j = i + 1; j < keys.length; j++) {
+        String twoKey = keys[j];
+        var tempTwo = lastFloorMap[twoKey]!;
+        var twoFloor = tempTwo['f'];
+        if (oneFloor == twoFloor) {
+          continue;
+        }
+        var left = tempTwo['left'];
+        var top = tempTwo['top'];
+        var diffX = (left - tempLeft).abs();
+        var diffY = (top - tempTop).abs();
+        if ((diffX < w) && (diffY < w)) {
+          lastFloorMap.remove(keys[i]);
+          break;
+        }
+      }
+    }
+    var end = DateTime.timestamp().millisecondsSinceEpoch;
+    print('use diff ${end - start}');
     setState(() {});
   }
 
@@ -316,7 +379,40 @@ class GameRoomPageState extends State<GameRoomPage>
     return true; // 如果所有元素都是0，返回true
   }
 
+  bool superMode = false;
+
   chickBox() {
+    if (superMode) {
+      _chickSuperBox();
+    } else {
+      _chickBox();
+    }
+  }
+
+  _chickSuperBox() {
+    if (myBox.length >= 3) {
+      for (int i = 2; i >= 0; i--) {
+        boxAnimatedContainerList[i].reset();
+        boxAnimatedContainerList[i].forward();
+        myBox.removeAt(i);
+        HapticFeedback.mediumImpact();
+        historyList.clear();
+      }
+    }
+    setState(() {});
+    if (myBox.isEmpty) {
+      if (checkAllZeros(gameMap)) {
+        nowLevel += 1;
+        if (!levelMap.containsKey(nowLevel)) {
+          GlobalPageRouter.replace(Pages.gameOver, context,
+              arguments: {'gameStatus': true});
+        }
+        initMap();
+      }
+    }
+  }
+
+  _chickBox() {
     var temp = {};
     for (int x = myBox.length - 1; x >= 0; x--) {
       var thisType = myBox[x]['type'];
@@ -579,6 +675,9 @@ class GameRoomPageState extends State<GameRoomPage>
     );
   }
 
+  var clickCount = 0;
+  var lastClickTime = 0;
+
   buildHeader() {
     var width = MediaQuery.of(context).size.width - 20;
     var boxWidth = width + 4;
@@ -633,7 +732,27 @@ class GameRoomPageState extends State<GameRoomPage>
       ],
     );
 
-    return a;
+    return GestureDetector(
+        child: a,
+        onTap: () {
+          // SUPER_MODE
+          var now = DateTime.now().millisecondsSinceEpoch;
+          if (now - lastClickTime < 300) {
+            clickCount++;
+          } else {
+            clickCount = 0;
+          }
+          lastClickTime = now;
+          if (clickCount >= 10) {
+            superMode = !superMode;
+            EasyLoading.showToast('超级模式:${superMode.toString().toUpperCase()}',
+                duration: const Duration(milliseconds: 200));
+            if (superMode) {
+              chickBox();
+            }
+            clickCount = 0;
+          }
+        });
   }
 
   double oneBarWidth = 0;
