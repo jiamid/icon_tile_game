@@ -6,7 +6,8 @@ import '../custom_widget/image_icon_button.dart';
 import '../custom_widget/key_zoo_board.dart';
 import '../router/router_manager.dart';
 import '../custom_widget/typing_text.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
+
 import '../commons/ui_config.dart';
 import '../main.dart';
 import '../custom_widget/gold_num_button.dart';

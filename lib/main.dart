@@ -4,7 +4,7 @@ import 'package:icon_tile_game/custom_widget/loading_page.dart';
 import 'pages/home.dart';
 import 'commons/storage_manager.dart';
 import 'commons/global_manager.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 Future<void> main() async {

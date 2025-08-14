@@ -10,7 +10,8 @@ import '../custom_widget/image_icon_button.dart';
 import '../router/router_manager.dart';
 import '../custom_widget/box_animation.dart' show runFlyBoxAnimate;
 import 'game_config.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
+
 import '../commons/ui_config.dart';
 import '../commons/notifier_manager.dart';
 import '../commons/gold_manager.dart';

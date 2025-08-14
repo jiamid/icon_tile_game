@@ -5,7 +5,8 @@ import '../custom_widget/loading_box.dart';
 import '../router/router_manager.dart';
 import 'background_box.dart';
 import 'key_zoo_board.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
+
 
 
 class FakeLoadingPage extends StatefulWidget {
