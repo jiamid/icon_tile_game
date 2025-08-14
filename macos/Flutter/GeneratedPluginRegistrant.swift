@@ -8,7 +8,7 @@ import Foundation
 import in_app_purchase_storekit
 import package_info_plus
 import shared_preferences_foundation
-import sqflite
+import sqflite_darwin
 import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
